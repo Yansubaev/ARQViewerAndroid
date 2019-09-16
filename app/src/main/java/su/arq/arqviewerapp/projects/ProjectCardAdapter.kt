@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.view.LayoutInflater
 import android.widget.ImageView
 import su.arq.arqviewerapp.R
-import kotlin.reflect.KMutableProperty0
 
 
 class ProjectCardAdapter (var cardModels: List<ProjectCardModel>?, var context: Context?) : RecyclerView.Adapter<ProjectCardAdapter.ViewHolder>() {

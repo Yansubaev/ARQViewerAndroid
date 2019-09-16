@@ -2,14 +2,15 @@
 <resources>
     <dimen name="input_field_elevation">10dp</dimen>
     <dimen name="space_between_fields">15dp</dimen>
-    <dimen name="input_field_width">320dp</dimen>
-    <dimen name="input_field_height">80dp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="input_field_width">278dp</dimen>
+    <dimen name="input_field_height">70dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="laucher_card_width">270dp</dimen>
-    <dimen name="launcher_card_height">270dp</dimen>
+    <dimen name="laucher_card_width">260dp</dimen>
+    <dimen name="launcher_card_height">260dp</dimen>
     <dimen name="laucher_card_elevation">10dp</dimen>
     <dimen name="back_btn_elevation">10dp</dimen>
     <dimen name="project_card_corner_radius">5dp</dimen>
+    <dimen name="sign_btn_width">186dp</dimen>
+    <dimen name="sign_bnt_height">52dp</dimen>
 </resources>

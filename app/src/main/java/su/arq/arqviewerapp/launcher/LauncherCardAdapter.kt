@@ -13,7 +13,7 @@ class LauncherCardAdapter(var cardModels: List<LauncherCardModel>?, var context:
     var layoutInflater: LayoutInflater? = null
 
     override fun isViewFromObject(p0: View, p1: Any): Boolean {
-        return p0.equals(p1)
+        return p0 == p1
     }
 
     override fun getCount(): Int {

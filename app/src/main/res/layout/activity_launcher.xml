@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/trapecy"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/just_background"
@@ -20,8 +20,8 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="96dp"
+        android:layout_height="52dp"
         android:layout_marginTop="35dp"
         android:contentDescription="@string/logo_of_arq"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,8 +32,8 @@
 
     <ImageView
         android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="183dp"
+        android:layout_height="58dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
@@ -56,14 +56,12 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.543">
-
-    </android.support.v4.view.ViewPager>
+        app:layout_constraintVertical_bias="0.543"/>
 
     <ImageButton
         android:id="@+id/sign_up_btn"
-        android:layout_width="214dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/sign_btn_width"
+        android:layout_height="@dimen/sign_bnt_height"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="75dp"
@@ -96,8 +94,8 @@
 
     <Button
         android:id="@+id/goto_website_btn"
-        android:layout_width="214dp"
-        android:layout_height="60dp"
+        android:layout_width="@dimen/sign_btn_width"
+        android:layout_height="@dimen/sign_bnt_height"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
