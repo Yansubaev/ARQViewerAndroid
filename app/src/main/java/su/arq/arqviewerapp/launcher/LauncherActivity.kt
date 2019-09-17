@@ -7,6 +7,8 @@ import android.view.View
 import su.arq.arqviewerapp.R
 import su.arq.arqviewerapp.sign.SignActivity
 import android.content.Intent as Intent1
+import android.content.Intent
+import android.net.Uri
 
 const val CHOSEN_PAGE = "SIGN_PAGE"
 
@@ -43,9 +45,14 @@ class LauncherActivity : AppCompatActivity() {
         setWindowsFlags()
     }
 
-    fun openSignActivity(view: View) {
-        val intent = Intent1(applicationContext, SignActivity::class.java)
-        startActivity(intent)
+    fun bottomSignButtonsClick(view: View) {
+        if(view.id == R.id.sign_up_btn){
+            val intent = Intent1(applicationContext, SignActivity::class.java)
+            startActivity(intent)
+        }else if (view.id == R.id.goto_website_btn){
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://arq.su/"))
+            startActivity(browserIntent)
+        }
     }
 
     private fun setWindowsFlags() {

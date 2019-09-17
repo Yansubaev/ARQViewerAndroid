@@ -68,7 +68,7 @@
         android:background="@drawable/custom_btn_rect_ripple"
         android:contentDescription="@string/sign_up_button"
         android:elevation="10dp"
-        android:onClick="openSignActivity"
+        android:onClick="bottomSignButtonsClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -102,7 +102,7 @@
         android:background="@drawable/custom_btn_transp_rect_ripple"
         android:elevation="10dp"
         android:fontFamily="@font/ttnorms_regular"
-        android:onClick="openSignActivity"
+        android:onClick="bottomSignButtonsClick"
         android:text="@string/goto_website_btn_text"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"

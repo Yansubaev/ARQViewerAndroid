@@ -5,6 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center"
+        android:background="@drawable/prj_card_background_ripple"
         app:cardCornerRadius="@dimen/project_card_corner_radius"
         app:cardElevation="@dimen/laucher_card_elevation">
 
