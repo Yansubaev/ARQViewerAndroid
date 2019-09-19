@@ -1,5 +1,6 @@
 package su.arq.arqviewerapp.sign
 
+import android.accounts.AccountAuthenticatorActivity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
@@ -66,5 +67,9 @@ class SignActivity : FragmentActivity() {
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
         startActivity(intent)
 
+    }
+
+    companion object {
+        const val EXTRA_TOKEN_TYPE: String = "SOME_ZALUPA"
     }
 }
