@@ -1,13 +1,12 @@
-package su.arq.arqviewerapp.projects
+package su.arq.arqviewer.projects
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import su.arq.arqviewerapp.R
+import su.arq.arqviewer.R
 import android.util.DisplayMetrics
 import android.util.Log
 import android.widget.TextView

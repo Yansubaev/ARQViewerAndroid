@@ -1,4 +1,4 @@
-package su.arq.arqviewerapp.projects
+package su.arq.arqviewer.projects
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.view.LayoutInflater
 import android.widget.ImageView
-import su.arq.arqviewerapp.R
+import su.arq.arqviewer.R
 
 
 class ProjectCardAdapter (var cardModels: List<ProjectCardModel>?, var context: Context?) : RecyclerView.Adapter<ProjectCardAdapter.ViewHolder>() {

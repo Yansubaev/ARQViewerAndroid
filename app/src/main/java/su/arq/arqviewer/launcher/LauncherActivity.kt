@@ -1,11 +1,11 @@
-package su.arq.arqviewerapp.launcher
+package su.arq.arqviewer.launcher
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.ViewPager
 import android.view.View
-import su.arq.arqviewerapp.R
-import su.arq.arqviewerapp.sign.SignActivity
+import su.arq.arqviewer.R
+import su.arq.arqviewer.sign.activity.SignActivity
 import android.content.Intent as Intent1
 import android.content.Intent
 import android.net.Uri

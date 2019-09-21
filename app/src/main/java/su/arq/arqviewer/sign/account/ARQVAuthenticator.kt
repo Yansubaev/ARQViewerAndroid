@@ -1,4 +1,4 @@
-package su.arq.arqviewerapp.sign
+package su.arq.arqviewer.sign.account
 
 import android.accounts.AbstractAccountAuthenticator
 import android.accounts.Account
@@ -8,18 +8,16 @@ import android.os.Bundle
 import android.accounts.AccountManager
 import android.content.Intent
 import android.text.TextUtils
+import su.arq.arqviewer.sign.activity.SignActivity
+import su.arq.arqviewer.sign.loader.ARQVTokenLoader
 
-
-
-
-
-class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
+class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
     override fun confirmCredentials(
         response: AccountAuthenticatorResponse?,
         account: Account?,
         options: Bundle?
-    ): Bundle {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    ): Bundle? {
+        return null
     }
 
     override fun updateCredentials(
@@ -27,8 +25,8 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         account: Account?,
         authTokenType: String?,
         options: Bundle?
-    ): Bundle {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    ): Bundle? {
+        return null
     }
 
     override fun getAuthToken(
@@ -43,7 +41,11 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         if (TextUtils.isEmpty(authToken)) {
             val password = am.getPassword(account)
             if (!TextUtils.isEmpty(password)) {
-                authToken = TokenLoader.signIn(mContext, account?.name, password)
+                authToken = ARQVTokenLoader.signIn(
+                    mContext,
+                    account?.name,
+                    password
+                )
             }
         }
         if (!TextUtils.isEmpty(authToken)) {
@@ -64,15 +66,15 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         response: AccountAuthenticatorResponse?,
         account: Account?,
         features: Array<out String>?
-    ): Bundle {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    ): Bundle? {
+        return null
     }
 
     override fun editProperties(
         response: AccountAuthenticatorResponse?,
         accountType: String?
-    ): Bundle {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    ): Bundle? {
+        return null
     }
 
     override fun addAccount(
@@ -93,8 +95,8 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         return bundle
     }
 
-    override fun getAuthTokenLabel(authTokenType: String?): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getAuthTokenLabel(authTokenType: String?): String? {
+        return null
     }
 
 }

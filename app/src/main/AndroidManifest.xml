@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="su.arq.arqviewerapp">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="su.arq.arqviewer">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -14,16 +15,35 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".projects.ProjectsActivity"></activity>
-        <activity android:name=".sign.SignActivity" />
-        <activity android:name=".launcher.LauncherActivity">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name="su.arq.arqviewer.projects.ProjectsActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="su.arq.arqviewer.sign.activity.SignActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="su.arq.arqviewer.launcher.LauncherActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name="su.arq.arqviewer.sign.account.ARQVAuthenticatorService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/arqv_authenticator" />
+        </service>
     </application>
 
 </manifest>

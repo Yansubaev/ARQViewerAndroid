@@ -1,4 +1,4 @@
-package su.arq.arqviewerapp
+package su.arq.arqviewer
 
 import org.junit.Test
 

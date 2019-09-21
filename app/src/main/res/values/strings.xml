@@ -12,4 +12,7 @@
     <string name="sign_in_txt">Авторизация</string>
     <string name="projects">Проекты</string>
     <string name="project_name">Project Name</string>
+    <string name="account_already_exists">Аккаунт уже существует</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
 </resources>

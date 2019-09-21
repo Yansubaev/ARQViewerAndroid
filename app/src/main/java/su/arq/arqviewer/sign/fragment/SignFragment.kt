@@ -1,45 +1,47 @@
-package su.arq.arqviewerapp.sign
+package su.arq.arqviewer.sign.fragment
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.net.Uri
-import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.text.method.PasswordTransformationMethod
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import su.arq.arqviewerapp.R
+import su.arq.arqviewer.R
 
-const val ALPHA_ANIMATION_DURATION: Long = 250
-const val TEXT_COLOR_ANIMATION_DURATION: Long = 250
-const val BACKGROUND_COLOR_ANIMATION_DURATION: Long = 250
 
 open class SignFragment : Fragment(), View.OnClickListener {
 
     protected var isPasswordHidden = true
 
+    companion object{
+        const val ALPHA_ANIMATION_DURATION: Long = 250
+        const val TEXT_COLOR_ANIMATION_DURATION: Long = 250
+        const val BACKGROUND_COLOR_ANIMATION_DURATION: Long = 250
+    }
+
     override fun onClick(v: View) {
 
     }
 
-    protected fun activateInput(text: TextView?, field: EditText?, container: View?) {
+    protected open fun activateInput(text: TextView?, field: EditText?, container: View?) {
         startBackgroundColorAnimation(
             container?.background,
-            resources.getColor(R.color.colorWhite),
-            resources.getColor(R.color.colorAccent)
+            resources.getColor(R.color.colorWhite, resources.newTheme()),
+            resources.getColor(R.color.colorAccent, resources.newTheme())
         )
 
         field?.visibility = View.VISIBLE
 
         startAlphaAnimation(text, 1.0f, 0.5f)
-        startColorTextAnimation(text, resources.getColor(R.color.textDarkColor), resources.getColor(R.color.colorWhite))
+        startColorTextAnimation(
+            text,
+            resources.getColor(R.color.textDarkColor, resources.newTheme()),
+            resources.getColor(R.color.colorWhite, resources.newTheme())
+        )
 
         field?.requestFocus()
         field?.requestFocusFromTouch()
@@ -52,16 +54,16 @@ open class SignFragment : Fragment(), View.OnClickListener {
                 if (field?.text.toString() == "") {
                     startBackgroundColorAnimation(
                         container?.background,
-                        resources.getColor(R.color.colorAccent),
-                        resources.getColor(R.color.colorWhite)
+                        resources.getColor(R.color.colorAccent, resources.newTheme()),
+                        resources.getColor(R.color.colorWhite, resources.newTheme())
                     )
 
                     field?.visibility = View.INVISIBLE
 
                     startColorTextAnimation(
                         text,
-                        resources.getColor(R.color.colorWhite),
-                        resources.getColor(R.color.textDarkColor)
+                        resources.getColor(R.color.colorWhite, resources.newTheme()),
+                        resources.getColor(R.color.textDarkColor, resources.newTheme())
                     )
                     startAlphaAnimation(text, 0.5f, 1.0f)
                 }
@@ -70,14 +72,15 @@ open class SignFragment : Fragment(), View.OnClickListener {
     }
 
 
-    protected fun startAlphaAnimation(view: View?, startValue: Float, endValue: Float) {
+    protected open fun startAlphaAnimation(view: View?, startValue: Float, endValue: Float) {
         val anim = ObjectAnimator.ofFloat(
             view,
             "alpha",
             startValue,
             endValue
         )
-        anim.duration = ALPHA_ANIMATION_DURATION
+        anim.duration =
+            ALPHA_ANIMATION_DURATION
         anim.start()
 
         anim.addUpdateListener { animation ->
@@ -89,29 +92,31 @@ open class SignFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    protected fun startColorTextAnimation(textView: TextView?, startValue: Int, endValue: Int) {
+    protected open fun startColorTextAnimation(textView: TextView?, startValue: Int, endValue: Int) {
         val anim = ObjectAnimator.ofArgb(
             textView,
             "textColor",
             startValue,
             endValue
         )
-        anim.duration = TEXT_COLOR_ANIMATION_DURATION
+        anim.duration =
+            TEXT_COLOR_ANIMATION_DURATION
         anim.start()
     }
 
-    protected fun startBackgroundColorAnimation(background: Drawable?, startValue: Int, endValue: Int) {
+    protected open fun startBackgroundColorAnimation(background: Drawable?, startValue: Int, endValue: Int) {
         val anim = ObjectAnimator.ofArgb(
             background,
             "tint",
             startValue,
             endValue
         )
-        anim.duration = BACKGROUND_COLOR_ANIMATION_DURATION
+        anim.duration =
+            BACKGROUND_COLOR_ANIMATION_DURATION
         anim.start()
     }
 
-    protected fun showAndHidePassword(field: EditText?) {
+    protected open fun showAndHidePassword(field: EditText?) {
         if (isPasswordHidden) {
             field?.transformationMethod = null
             isPasswordHidden = false

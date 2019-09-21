@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:backgroundTint="#FFFFFF"
-    tools:context=".sign.SignActivity">
+    tools:context=".sign.activity.SignActivity">
 
     <TextView
         android:id="@+id/authorization"
@@ -60,7 +60,7 @@
         android:background="@drawable/circle"
         android:contentDescription="Next button"
         android:elevation="20dp"
-        android:onClick="openProjects"
+        android:onClick="signIn"
         android:src="@drawable/ic_next_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

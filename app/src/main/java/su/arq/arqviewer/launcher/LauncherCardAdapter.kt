@@ -1,4 +1,4 @@
-package su.arq.arqviewerapp.launcher
+package su.arq.arqviewer.launcher
 
 import android.content.Context
 import android.support.v4.view.PagerAdapter
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import su.arq.arqviewerapp.R
+import su.arq.arqviewer.R
 
 class LauncherCardAdapter(var cardModels: List<LauncherCardModel>?, var context: Context) : PagerAdapter(){
 

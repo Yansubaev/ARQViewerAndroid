@@ -1,4 +1,4 @@
-package su.arq.arqviewerapp.sign
+package su.arq.arqviewer.sign.page.model
 
 import android.support.v4.app.Fragment
 
