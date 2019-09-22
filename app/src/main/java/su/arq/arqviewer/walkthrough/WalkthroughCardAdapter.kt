@@ -1,4 +1,4 @@
-package su.arq.arqviewer.launcher
+package su.arq.arqviewer.walkthrough
 
 import android.content.Context
 import android.support.v4.view.PagerAdapter
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import su.arq.arqviewer.R
 
-class LauncherCardAdapter(var cardModels: List<LauncherCardModel>?, var context: Context) : PagerAdapter(){
+class WalkthroughCardAdapter(var cardModels: List<WalkthroughCardModel>?, var context: Context) : PagerAdapter(){
 
     var layoutInflater: LayoutInflater? = null
 
@@ -22,7 +22,7 @@ class LauncherCardAdapter(var cardModels: List<LauncherCardModel>?, var context:
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater!!.inflate(R.layout.launcher_card_item, container, false)
+        val view = layoutInflater!!.inflate(R.layout.walkthrough_card_item, container, false)
 
         val topText: TextView
         val bottomText: TextView

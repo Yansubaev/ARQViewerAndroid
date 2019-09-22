@@ -17,7 +17,7 @@
         android:alpha="1"
         android:fontFamily="@font/ttnorms_bold"
         android:onClick="selectPage"
-        android:text="@string/sign_in_txt"
+        android:text="@string/signing_in"
         android:textAppearance="@style/top_text_activity_name"
         android:textColor="#212128"
         android:textSize="24sp"

@@ -9,12 +9,10 @@ import org.json.JSONObject
 import android.text.TextUtils
 import android.util.Log
 import su.arq.arqviewer.R
-import su.arq.arqviewer.utils.IOUtils
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.security.KeyStore
-import java.security.cert.CertificateExpiredException
 import java.security.cert.X509Certificate
 import javax.net.ssl.*
 
@@ -75,6 +73,7 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
     }
 
     override fun onStartLoading() {
+
         if (TextUtils.isEmpty(mAuthToken)) {
             forceLoad()
         } else {
@@ -83,33 +82,39 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
     }
 
     override fun deliverResult(data: String?) {
+
         mAuthToken = data
         super.deliverResult(data)
     }
 
     override fun loadInBackground(): String? {
+
         try {
             return signIn()
         } catch (e: IOException) {
             Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
         }
+
         return null
     }
 
     @Throws(IOException::class)
     private fun signIn(): String? {
-        //someZalupa()
+
+        //trustAllCertificates()
         val cn: HttpURLConnection = URL("https://handshake.arq.su/signin").openConnection()
                 as HttpURLConnection
         cn.requestMethod = "POST"
         //cn.addRequestProperty("Content-Type", "application/json")
         sendBody(cn)
+
         return readToken(cn)
     }
 
 
     @Throws(IOException::class)
     private fun sendBody(cn: HttpURLConnection) {
+
         val body = JSONObject()
         try {
             body.put("login", mLogin)
@@ -123,8 +128,8 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
             //val out = BufferedOutputStream(cn.outputStream)
             val writer = OutputStreamWriter(cn.outputStream)
 
-            writer.use { w ->
-                w.write(data)
+            writer.use {
+                it.write(data)
             }
 
             Log.i(this.javaClass.simpleName, "response code is ${cn.responseCode}")
@@ -137,6 +142,7 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
 
     @Throws(IOException::class)
     private fun readToken(cn: HttpURLConnection): String? {
+
         //cn.doInput = true
         val reader = BufferedReader(cn.inputStream.reader())
         //val inp = BufferedInputStream(cn.inputStream)
@@ -150,10 +156,11 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
         } finally {
             reader.close()
         }
+
         return null
     }
 
-    fun someZalupa(){
+    private fun trustAllCertificates(){
 
         val wrappedTrustManagers = Array<TrustManager>(1){
             TempTrustManager()

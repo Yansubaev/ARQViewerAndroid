@@ -12,5 +12,5 @@
     <dimen name="back_btn_elevation">10dp</dimen>
     <dimen name="project_card_corner_radius">5dp</dimen>
     <dimen name="sign_btn_width">186dp</dimen>
-    <dimen name="sign_bnt_height">52dp</dimen>
+    <dimen name="sign_btn_height">52dp</dimen>
 </resources>
