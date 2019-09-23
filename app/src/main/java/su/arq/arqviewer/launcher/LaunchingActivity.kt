@@ -6,22 +6,14 @@ import android.os.Bundle
 import su.arq.arqviewer.R
 import su.arq.arqviewer.walkthrough.WalkthroughActivity
 
-class LauncherActivity : AppCompatActivity() {
+class LaunchingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_launcher)
-
-    }
-
-    override fun onResume() {
-        super.onResume()
+        setContentView(R.layout.activity_launching)
 
         val intent = Intent(applicationContext, WalkthroughActivity::class.java)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-
-        //startActivity(intent)
-
+        startActivity(intent)
         finish()
     }
 }

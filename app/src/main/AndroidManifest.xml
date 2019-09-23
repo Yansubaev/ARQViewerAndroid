@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="su.arq.arqviewer">
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
 
     <application
@@ -20,8 +21,8 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".launcher.LauncherActivity"
-            android:screenOrientation="portrait">
+            android:theme="@style/ARQVTheme.Launcher"
+            android:name=".launcher.LaunchingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +40,7 @@
 
         <activity
             android:name=".walkthrough.WalkthroughActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".sign.account.ARQVAuthenticatorService"
@@ -53,6 +54,5 @@
                 android:resource="@xml/arqv_authenticator" />
         </service>
     </application>
-
 
 </manifest>
