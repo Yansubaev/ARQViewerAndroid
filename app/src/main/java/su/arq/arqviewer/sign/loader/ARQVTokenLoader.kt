@@ -19,7 +19,8 @@ import javax.net.ssl.*
 
 class ARQVTokenLoader(context: Context, login: String?, password: String?) : AsyncTaskLoader<String>(context) {
 
-    private var mObtainTokenUrl: String = context.getString(R.string.arqv_connection_base_url)
+    private var mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
+    private var mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
     private var mLogin: String? = login
     private var mPassword: String? = password
     private var mAuthToken: String? = null
@@ -34,41 +35,9 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
                     password
                 ).signIn()
             } catch (e: IOException) {
-                Log.e(ARQVTokenLoader::class.java.simpleName, e.message, e)
+                Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
             }
             return null
-        }
-
-        class TempTrustManager : X509TrustManager {
-            private val origTrustManager: X509TrustManager
-
-            init {
-                val tmf = TrustManagerFactory.getInstance(
-                    TrustManagerFactory.getDefaultAlgorithm()
-                )
-                tmf.init(KeyStore.getInstance(KeyStore.getDefaultType()))
-                val trustManagers = tmf.trustManagers
-
-                origTrustManager = trustManagers[0] as X509TrustManager
-            }
-
-            override fun checkClientTrusted(
-                chain: Array<out X509Certificate>?,
-                authType: String?
-            ) {
-                //origTrustManager.checkClientTrusted(chain, authType)
-            }
-
-            override fun checkServerTrusted(
-                chain: Array<out X509Certificate>?,
-                authType: String?
-            ) {
-
-            }
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> {
-                return origTrustManager.acceptedIssuers
-            }
         }
     }
 
@@ -101,11 +70,10 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
     @Throws(IOException::class)
     private fun signIn(): String? {
 
-        //trustAllCertificates()
-        val cn: HttpURLConnection = URL("https://handshake.arq.su/signin").openConnection()
+        val cn: HttpURLConnection = URL(mBaseUrl + mSignInUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "POST"
-        //cn.addRequestProperty("Content-Type", "application/json")
+        cn.addRequestProperty("Content-Type", "application/json")
         sendBody(cn)
 
         return readToken(cn)
@@ -122,18 +90,12 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
 
             Log.i(this.javaClass.simpleName, body.toString())
 
-            val data = body.toString()//.toByteArray()
+            val data = body.toString().toByteArray()
             cn.doOutput = true
-            //cn.setFixedLengthStreamingMode(data.size)
-            //val out = BufferedOutputStream(cn.outputStream)
-            val writer = OutputStreamWriter(cn.outputStream)
+            cn.setFixedLengthStreamingMode(data.size)
+            val out = BufferedOutputStream(cn.outputStream)
 
-            writer.use {
-                it.write(data)
-            }
-
-            Log.i(this.javaClass.simpleName, "response code is ${cn.responseCode}")
-            Log.i(this.javaClass.simpleName, "response message is ${cn.responseMessage}")
+            out.use { it.write(data) }
 
         } catch (e: JSONException) {
             Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
@@ -142,33 +104,27 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
 
     @Throws(IOException::class)
     private fun readToken(cn: HttpURLConnection): String? {
-
-        //cn.doInput = true
-        val reader = BufferedReader(cn.inputStream.reader())
-        //val inp = BufferedInputStream(cn.inputStream)
+        var inp: BufferedInputStream? = null
         try {
-            val json = JSONObject(reader.readLine())
-            if (json.has("token")) {
-                return json.getString("token")
+            inp = BufferedInputStream(cn.inputStream)
+            val inpString = inp.readBytes().toString(Charsets.UTF_8)
+
+            Log.i(this.javaClass.simpleName, "Input: $inpString")
+            val json = JSONObject(inpString)
+            if(json.has("success") && json.getBoolean("success")){
+                if (json.has("token")) {
+                    return json.getString("token")
+                }
             }
         } catch (e: JSONException) {
             Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+        } catch (e: FileNotFoundException){
+            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
         } finally {
-            reader.close()
+            inp?.close()
         }
 
         return null
-    }
-
-    private fun trustAllCertificates(){
-
-        val wrappedTrustManagers = Array<TrustManager>(1){
-            TempTrustManager()
-        }
-
-        val sc: SSLContext = SSLContext.getInstance("TLS")
-        sc.init(null, wrappedTrustManagers, null)
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
     }
 
 }

@@ -19,12 +19,8 @@ class LauncherActivity : AppCompatActivity() {
 
         val intent = Intent(applicationContext, WalkthroughActivity::class.java)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        var t = 0
-        for(i in 0 until 1000000){
-            t+=i
-        }
 
-        startActivity(intent)
+        //startActivity(intent)
 
         finish()
     }

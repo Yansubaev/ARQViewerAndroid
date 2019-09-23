@@ -61,29 +61,12 @@ class SignInFragment : SignFragment(), LoaderManager.LoaderCallbacks<String> {
     }
 
     fun signIn(){
-        Log.i(this.javaClass.simpleName, "signIn method in fragment")
-        loaderManager.restartLoader(R.id.auth_token_loader, null, this)
-/*
         when {
             TextUtils.isEmpty(loginField?.text) -> loginField?.error = getString(R.string.login)
             TextUtils.isEmpty(passwordField?.text) -> passwordField?.error = getString(R.string.password)
             else -> loaderManager.restartLoader(R.id.auth_token_loader, null, this)
         }
-*/
     }
-
-/*
-    override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<String> {
-        if(p0 == R.id.auth_token_loader){
-            return ARQVTokenLoader(
-                activity!!.applicationContext,
-                loginField?.text.toString(),
-                passwordField?.text.toString()
-                )
-        }
-        return
-    }
-*/
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<String> {
         return ARQVTokenLoader(

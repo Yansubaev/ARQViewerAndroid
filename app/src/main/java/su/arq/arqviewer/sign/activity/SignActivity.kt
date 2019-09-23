@@ -49,7 +49,6 @@ class SignActivity : FragmentActivity() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         setContentView(R.layout.activity_sign)
 
-
         setWindowsFlags()
 
         signInFragment = SignInFragment()
@@ -85,6 +84,10 @@ class SignActivity : FragmentActivity() {
         }
         setAccountAuthenticatorResult(result)
         setResult(Activity.RESULT_OK)
+
+        val intent = Intent(applicationContext, ProjectsActivity::class.java)
+        startActivity(intent)
+
         finish()
     }
 

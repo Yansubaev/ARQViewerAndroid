@@ -7,6 +7,7 @@
     android:background="@color/colorPrimary"
     tools:context="su.arq.arqviewer.launcher.LauncherActivity">
 
+<!--
     <ImageView
         android:id="@+id/logo_lnch"
         android:layout_width="206dp"
@@ -27,4 +28,5 @@
         app:layout_constraintStart_toStartOf="@+id/logo_lnch"
         app:layout_constraintTop_toBottomOf="@+id/logo_lnch"
         app:srcCompat="@drawable/ic_viewer_text" />
+-->
 </android.support.constraint.ConstraintLayout>
