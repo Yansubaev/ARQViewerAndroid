@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="arqv_connection_base_url">https://handshake.arq.su/</string>
-    <string name="arqv_connection_sign_in">signin/</string>
+    <string name="arq_website">https://arq.su/</string>
+    <string name="arqv_connection_base_url">https://handshake.arq.su</string>
+    <string name="arqv_connection_sign_in">/signin</string>
+    <string name="arqv_connection_bulds">/build</string>
 </resources>

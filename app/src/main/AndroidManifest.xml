@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="su.arq.arqviewer">
 
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
 
     <application
@@ -19,25 +19,21 @@
         android:supportsRtl="true"
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity
-            android:theme="@style/ARQVTheme.Launcher"
-            android:name=".launcher.LaunchingActivity">
+            android:name=".splash.SplashScreenActivity"
+            android:theme="@style/ARQVTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".projects.ProjectsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".sign.activity.SignActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".walkthrough.WalkthroughActivity"
             android:screenOrientation="portrait" />

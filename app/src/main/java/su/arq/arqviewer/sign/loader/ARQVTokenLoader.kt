@@ -98,7 +98,7 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
             out.use { it.write(data) }
 
         } catch (e: JSONException) {
-            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+            Log.e(this.javaClass.simpleName, e.message, e)
         }
     }
 
@@ -109,7 +109,7 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
             inp = BufferedInputStream(cn.inputStream)
             val inpString = inp.readBytes().toString(Charsets.UTF_8)
 
-            Log.i(this.javaClass.simpleName, "Input: $inpString")
+            Log.d(this.javaClass.simpleName, "Input: $inpString")
             val json = JSONObject(inpString)
             if(json.has("success") && json.getBoolean("success")){
                 if (json.has("token")) {
@@ -117,9 +117,9 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
                 }
             }
         } catch (e: JSONException) {
-            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+            Log.e(this.javaClass.simpleName, e.message, e)
         } catch (e: FileNotFoundException){
-            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+            Log.e(this.javaClass.simpleName, e.message, e)
         } finally {
             inp?.close()
         }

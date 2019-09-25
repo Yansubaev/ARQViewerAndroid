@@ -10,8 +10,6 @@ import android.content.Intent as Intent1
 import android.content.Intent
 import android.net.Uri
 
-const val CHOSEN_PAGE = "SIGN_PAGE"
-
 class WalkthroughActivity : AppCompatActivity() {
 
 
@@ -22,14 +20,15 @@ class WalkthroughActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         setContentView(R.layout.activity_walkthrough)
-        
+
         setWindowsFlags()
 
         cardModels = ArrayList()
         cardModels?.add(WalkthroughCardModel("ARQ Editor", "ARQ это ваш проводник в мир дополненной реальности." +
-                " Просто загрузите 3D модель и дополните вашу реальность новыми объектами созданные вами." +
+                " Просто загрузите 3D модель и дополните вашу реальность новыми объектами, созданными вами." +
                 " Подробности на нашем сайте."))
 
         cardAdapter = WalkthroughCardAdapter(cardModels, this)
@@ -50,7 +49,7 @@ class WalkthroughActivity : AppCompatActivity() {
             val intent = Intent1(applicationContext, SignActivity::class.java)
             startActivity(intent)
         }else if (view.id == R.id.goto_website_btn){
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://arq.su/"))
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(applicationContext.getString(R.string.arq_website)))
             startActivity(browserIntent)
         }
     }
