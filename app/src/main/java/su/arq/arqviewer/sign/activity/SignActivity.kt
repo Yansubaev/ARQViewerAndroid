@@ -34,7 +34,7 @@ class SignActivity : FragmentActivity() {
     private var signInFragment: SignInFragment? = null
 
     companion object {
-        const val EXTRA_TOKEN_TYPE = "su.arq.arqviewerapp.EXTRA_TOKEN_TYPE"
+        const val EXTRA_TOKEN_TYPE = "su.arq.arqviewer.EXTRA_TOKEN_TYPE"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +86,7 @@ class SignActivity : FragmentActivity() {
         setResult(Activity.RESULT_OK)
 
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
+        intent.putExtra("EXTRA_TOKEN", token)
         startActivity(intent)
 
         finish()
@@ -125,23 +126,15 @@ class SignActivity : FragmentActivity() {
     }
 
     private fun setWindowsFlags() {
-        this.window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-
+        this.window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                )
     }
 
     fun signIn(view: View){
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
         signInFragment?.signIn()
-
-        if(signInFragment == null){
-            Log.i(this.javaClass.simpleName, "signIn fragment is null")
-        }else{
-            Log.i(this.javaClass.simpleName, "signIn fragment is not null")
-        }
-
-        //startActivity(intent)
-
     }
 
 }

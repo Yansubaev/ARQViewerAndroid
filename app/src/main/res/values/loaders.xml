@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="auth_token_loader" type="id" />
+    <item name="auth_data_loader" type="id" />
+    <item name="builds_loader" type="id" />
 
 </resources>

@@ -1,4 +1,4 @@
-package su.arq.arqviewer.sign.account
+package su.arq.arqviewer.account
 
 import android.accounts.AbstractAccountAuthenticator
 import android.accounts.Account
@@ -9,7 +9,7 @@ import android.accounts.AccountManager
 import android.content.Intent
 import android.text.TextUtils
 import su.arq.arqviewer.sign.activity.SignActivity
-import su.arq.arqviewer.sign.loader.ARQVTokenLoader
+import su.arq.arqviewer.loaders.ARQVAuthDataLoader
 
 class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
     override fun confirmCredentials(
@@ -41,7 +41,7 @@ class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mC
         if (TextUtils.isEmpty(authToken)) {
             val password = am.getPassword(account)
             if (!TextUtils.isEmpty(password)) {
-                authToken = ARQVTokenLoader.signIn(
+                authToken = ARQVAuthDataLoader.signIn(
                     mContext,
                     account?.name,
                     password

@@ -1,4 +1,4 @@
-package su.arq.arqviewer.sign.loader
+package su.arq.arqviewer.loaders
 
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
@@ -12,37 +12,33 @@ import su.arq.arqviewer.R
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
-import java.security.KeyStore
-import java.security.cert.X509Certificate
-import javax.net.ssl.*
 
 
-class ARQVTokenLoader(context: Context, login: String?, password: String?) : AsyncTaskLoader<String>(context) {
+class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : AsyncTaskLoader<String>(context) {
 
-    private var mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
-    private var mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
-    private var mLogin: String? = login
-    private var mPassword: String? = password
+    private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
+    private val mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
+    private val mLogin: String? = login
+    private val mPassword: String? = password
     private var mAuthToken: String? = null
 
     companion object {
         @JvmStatic
         fun signIn(context: Context, login: String?, password: String?): String? {
             try {
-                return ARQVTokenLoader(
+                return ARQVAuthDataLoader(
                     context,
                     login,
                     password
                 ).signIn()
             } catch (e: IOException) {
-                Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+                Log.e(ARQVAuthDataLoader.javaClass.simpleName, e.message, e)
             }
             return null
         }
     }
 
     override fun onStartLoading() {
-
         if (TextUtils.isEmpty(mAuthToken)) {
             forceLoad()
         } else {
@@ -51,17 +47,15 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
     }
 
     override fun deliverResult(data: String?) {
-
         mAuthToken = data
         super.deliverResult(data)
     }
 
     override fun loadInBackground(): String? {
-
         try {
             return signIn()
         } catch (e: IOException) {
-            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+            Log.e(this.javaClass.simpleName, e.message, e)
         }
 
         return null
@@ -69,7 +63,6 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
 
     @Throws(IOException::class)
     private fun signIn(): String? {
-
         val cn: HttpURLConnection = URL(mBaseUrl + mSignInUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "POST"
@@ -82,7 +75,6 @@ class ARQVTokenLoader(context: Context, login: String?, password: String?) : Asy
 
     @Throws(IOException::class)
     private fun sendBody(cn: HttpURLConnection) {
-
         val body = JSONObject()
         try {
             body.put("login", mLogin)

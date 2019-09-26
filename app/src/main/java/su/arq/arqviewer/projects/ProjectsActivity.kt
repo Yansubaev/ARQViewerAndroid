@@ -1,22 +1,26 @@
 package su.arq.arqviewer.projects
 
-import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.Loader
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.TextView
+import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.loaders.ARQVBuildsLoader
 import kotlin.math.roundToInt
 
-class ProjectsActivity : AppCompatActivity(), ProjectCardAdapter.ItemClickListener {
+class ProjectsActivity : AppCompatActivity(), ProjectCardAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Array<ARQBuild>> {
 
     private var projectModels: MutableList<ProjectCardModel>? = null
     private var projectAdapter: ProjectCardAdapter? = null
     private var projectsGrid: RecyclerView? = null
+    private var mLoaderManager: LoaderManager? = null
+    private var token: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,16 +30,12 @@ class ProjectsActivity : AppCompatActivity(), ProjectCardAdapter.ItemClickListen
         projectsGrid = this.findViewById(R.id.projects_grid)
         projectsGrid?.layoutManager = GridLayoutManager(applicationContext, spanCount)
 
+        token = intent?.getStringExtra("EXTRA_TOKEN")
+        Log.d(this.javaClass.simpleName, token)
+
+        mLoaderManager = LoaderManager.getInstance(this)
+
         projectModels = ArrayList()
-        projectModels?.add(ProjectCardModel("1.Pizdec"))
-        projectModels?.add(ProjectCardModel("2.Nahui"))
-        projectModels?.add(ProjectCardModel("3.Blyat"))
-        projectModels?.add(ProjectCardModel("4.Pizdec"))
-        projectModels?.add(ProjectCardModel("5.Nahui"))
-        projectModels?.add(ProjectCardModel("6.Blyat"))
-        projectModels?.add(ProjectCardModel("7.Pizdec"))
-        projectModels?.add(ProjectCardModel("8.Nahui"))
-        projectModels?.add(ProjectCardModel("9.Blyat"))
 
         projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context)
         projectAdapter?.setOnClickListener(this)
@@ -48,16 +48,40 @@ class ProjectsActivity : AppCompatActivity(), ProjectCardAdapter.ItemClickListen
         projectsGrid?.addItemDecoration(itemDecoration)
 
         projectsGrid?.adapter = projectAdapter
+
+        mLoaderManager?.restartLoader(R.id.builds_loader, null, this)
     }
 
     fun quitProjects(view: View){
         super.onBackPressed()
     }
 
-    @SuppressLint("ResourceAsColor", "SetTextI18n")
     override fun onItemClick(view: View?, position: Int) {
-        Log.i("Yansub", "Clicked at " + projectAdapter?.getItem(position))
-        view?.findViewById<TextView>(R.id.project_name_txt)?.text = "LOHPIDR"
+
     }
 
+    override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<Array<ARQBuild>> {
+        return ARQVBuildsLoader(applicationContext, token)
+    }
+
+    override fun onLoadFinished(p0: Loader<Array<ARQBuild>>, builds: Array<ARQBuild>?) {
+        Log.d(this.javaClass.simpleName, "onLoadFinished: ${builds?.size}")
+        builds?.forEach {
+            projectModels?.add(ProjectCardModel(it.name, it.icon ?: 0))
+            Log.d(this.javaClass.simpleName, "project: " + it.name)
+        }
+        updateProjectsGrid()
+    }
+
+    override fun onLoaderReset(p0: Loader<Array<ARQBuild>>) {
+
+    }
+
+    private fun updateProjectsGrid(){
+        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context)
+        projectAdapter?.setOnClickListener(this)
+
+        projectsGrid?.adapter = projectAdapter
+
+    }
 }

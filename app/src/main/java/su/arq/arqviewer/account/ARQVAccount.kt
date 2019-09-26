@@ -1,4 +1,4 @@
-package su.arq.arqviewer.sign.account
+package su.arq.arqviewer.account
 
 import android.accounts.Account
 import android.os.Parcel

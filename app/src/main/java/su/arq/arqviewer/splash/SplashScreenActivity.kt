@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import su.arq.arqviewer.R
 import su.arq.arqviewer.projects.ProjectsActivity
-import su.arq.arqviewer.sign.account.ARQVAccount
+import su.arq.arqviewer.account.ARQVAccount
 import su.arq.arqviewer.walkthrough.WalkthroughActivity
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -25,7 +25,10 @@ class SplashScreenActivity : AppCompatActivity() {
         intent = if(al.isNotEmpty()){
             for(ac in al)
                 Log.d(this.javaClass.simpleName, ac.name)
-            Intent(applicationContext, ProjectsActivity::class.java)
+            Intent(
+                applicationContext,
+                ProjectsActivity::class.java
+            ).putExtra("EXTRA_TOKEN", am.peekAuthToken(al.last(), al.last().type))
         }else{
             Log.d(this.javaClass.simpleName, "No ARQV Accounts")
             Intent(applicationContext, WalkthroughActivity::class.java)

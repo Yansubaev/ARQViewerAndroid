@@ -39,7 +39,7 @@
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".sign.account.ARQVAuthenticatorService"
+            android:name="su.arq.arqviewer.account.ARQVAuthenticatorService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />

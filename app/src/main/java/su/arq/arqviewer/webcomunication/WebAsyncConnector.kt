@@ -2,46 +2,88 @@ package su.arq.arqviewer.webcomunication
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.json.JSONException
 import org.json.JSONObject
 import su.arq.arqviewer.R
-import su.arq.arqviewer.sign.loader.ARQVTokenLoader
-import java.io.BufferedInputStream
+import su.arq.arqviewer.webcomunication.callbacks.AuthDataReceivable
+import su.arq.arqviewer.webcomunication.callbacks.BuildsReceivable
+import su.arq.arqviewer.webcomunication.response.BuildsResponse
+import su.arq.arqviewer.webcomunication.response.SignInResponse
 import java.io.BufferedOutputStream
-import java.io.FileNotFoundException
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
 
-class WebAsyncConnector(context: Context, login: String?, password: String?) {
+class WebAsyncConnector(context: Context?, login: String?, password: String?) {
 
-    private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
-    private val mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
-    private val mBuildsUrl: String = context.getString(R.string.arqv_connection_bulds)
+    private val mBaseUrl: String = context?.getString(R.string.arqv_connection_base_url) ?: ""
+    private val mSignInUrl: String = context?.getString(R.string.arqv_connection_sign_in) ?: ""
+    private val mBuildsUrl: String = context?.getString(R.string.arqv_connection_bulds) ?: ""
 
     private var mLogin: String? = login
     private var mPassword: String? = password
     private var mAuthToken: String? = null
 
-    init {
+    private var authDataReceivers: MutableList<AuthDataReceivable> = mutableListOf()
+    private var buildsReceivers: MutableList<BuildsReceivable> = mutableListOf()
 
+    fun addAuthDataReceiveListener(listener: AuthDataReceivable) = authDataReceivers.add(listener)
+    fun addBuildsReceiveListener(listener: BuildsReceivable) = buildsReceivers.add(listener)
+
+    fun signIn() = runBlocking {
+        val sign = launch { signInCoroutine() }
     }
 
-    fun signIn(){
+    fun loadBuilds(token: String) = runBlocking {
+        val builds = launch { loadBuildsCoroutine(token) }
+    }
 
-        val cn: HttpURLConnection = URL(mBaseUrl + mSignInUrl).openConnection()
-                as HttpURLConnection
-        cn.requestMethod = "POST"
-        cn.addRequestProperty("Content-Type", "application/json")
+    private suspend fun signInCoroutine(){
+        val cn = prepareConnection(mSignInUrl, "POST")
 
-        sendBody(cn)
+        val body = JSONObject()
 
-        if(cn.responseCode in 100..300){
-            val token = readResponce(cn)
+        try {
+            body.put("login", mLogin)
+            body.put("password", mPassword)
+        } catch (e: JSONException) {
+            Log.e(this.javaClass.simpleName, e.message, e)
+        }
+
+        val data = body.toString().toByteArray()
+        cn.doOutput = true
+        cn.setFixedLengthStreamingMode(data.size)
+        val out = BufferedOutputStream(cn.outputStream)
+
+        out.use { it.write(data) }
+
+        if(responseGood(cn)){
+            mAuthToken = readToken(cn)
         }
     }
 
-    private fun sendBody(cn: HttpURLConnection){
+    private suspend fun loadBuildsCoroutine(token: String){
+        val cn = prepareConnection(mBuildsUrl, "GET")
+        cn.addRequestProperty("Authorization", "Bearer $token")
+
+        cn.doOutput = true
+
+        readBuilds(cn)
+    }
+
+    private fun prepareConnection(addUrl: String, method: String) : HttpURLConnection{
+        val cn: HttpURLConnection = URL(mBaseUrl + addUrl).openConnection()
+                as HttpURLConnection
+        cn.requestMethod = method
+        cn.addRequestProperty("Content-Type", "application/json")
+
+        return cn
+    }
+
+    private fun sendAuthBody(cn: HttpURLConnection) {
         val body = JSONObject()
         try {
             body.put("login", mLogin)
@@ -57,33 +99,49 @@ class WebAsyncConnector(context: Context, login: String?, password: String?) {
             out.use { it.write(data) }
 
         } catch (e: JSONException) {
-            Log.e(ARQVTokenLoader.javaClass.simpleName, e.message, e)
+            Log.e(this.javaClass.simpleName, e.message, e)
         }
     }
 
-    private fun readResponce(cn: HttpURLConnection) : String?{
+    private fun responseGood(cn: HttpURLConnection) : Boolean = cn.responseCode in 100 until 300
 
-        var inp: BufferedInputStream? = null
-        try {
-            inp = BufferedInputStream(cn.inputStream)
-            val inpString = inp.readBytes().toString(Charsets.UTF_8)
+    private fun readToken(cn: HttpURLConnection) : String? {
+        try{
+            val tr = SignInResponse(cn.inputStream)
 
-            Log.d(this.javaClass.simpleName, "Input: $inpString")
-            val json = JSONObject(inpString)
-            if(json.has("success") && json.getBoolean("success")){
-                if (json.has("token")) {
-                    return json.getString("token")
+            if(tr.success){
+                for(receiver in authDataReceivers){
+                    receiver.receiveToken(tr.token, tr.name, tr.email)
+                }
+            }else{
+                for(receiver in authDataReceivers){
+                    receiver.receiveError()
                 }
             }
-        } catch (e: JSONException) {
-            Log.e(this.javaClass.simpleName, e.message, e)
-        } catch (e: FileNotFoundException){
-            Log.e(this.javaClass.simpleName, e.message, e)
-        } finally {
-            inp?.close()
+        }
+        catch (ex: IOException){
         }
 
         return null
     }
 
+    private fun readBuilds(cn: HttpURLConnection){
+        try{
+            val tr = BuildsResponse(cn.inputStream)
+
+            if(tr.success){
+                for(receiver in buildsReceivers){
+                    receiver.receiveBuilds(tr.builds)
+                }
+            }else{
+                for(receiver in authDataReceivers){
+                    receiver.receiveError()
+                }
+            }
+        }
+        catch (ex: IOException){
+        }
+
+        return
+    }
 }
