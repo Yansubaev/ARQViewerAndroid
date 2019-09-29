@@ -9,7 +9,8 @@ import android.accounts.AccountManager
 import android.content.Intent
 import android.text.TextUtils
 import su.arq.arqviewer.sign.activity.SignActivity
-import su.arq.arqviewer.loaders.ARQVAuthDataLoader
+import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
+import su.arq.arqviewer.utils.EXTRA_TOKEN_TYPE
 
 class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
     override fun confirmCredentials(
@@ -55,7 +56,7 @@ class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mC
         } else {
             val intent = Intent(mContext, SignActivity::class.java)
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
-            intent.putExtra(SignActivity.EXTRA_TOKEN_TYPE, authTokenType)
+            intent.putExtra(EXTRA_TOKEN_TYPE, authTokenType)
             val bundle = Bundle()
             bundle.putParcelable(AccountManager.KEY_INTENT, intent)
         }
@@ -85,7 +86,7 @@ class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mC
         options: Bundle?
     ): Bundle {
         val intent = Intent(mContext, SignActivity::class.java)
-        intent.putExtra(SignActivity.EXTRA_TOKEN_TYPE, accountType)
+        intent.putExtra(EXTRA_TOKEN_TYPE, accountType)
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         val bundle = Bundle()
         if (options != null) {

@@ -14,7 +14,7 @@ import android.widget.TextView
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQVAccount
-import su.arq.arqviewer.loaders.ARQVAuthDataLoader
+import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 
 class SignInFragment : SignFragment(), LoaderManager.LoaderCallbacks<String> {
     private var loginLay: ConstraintLayout? = null

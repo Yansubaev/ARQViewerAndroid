@@ -1,4 +1,4 @@
-package su.arq.arqviewer.loaders
+package su.arq.arqviewer.webcomunication.loaders
 
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
@@ -9,7 +9,9 @@ import org.json.JSONObject
 import android.text.TextUtils
 import android.util.Log
 import su.arq.arqviewer.R
+import su.arq.arqviewer.webcomunication.response.AuthDataResponse
 import java.io.*
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -96,27 +98,11 @@ class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : 
 
     @Throws(IOException::class)
     private fun readToken(cn: HttpURLConnection): String? {
-        var inp: BufferedInputStream? = null
-        try {
-            inp = BufferedInputStream(cn.inputStream)
-            val inpString = inp.readBytes().toString(Charsets.UTF_8)
-
-            Log.d(this.javaClass.simpleName, "Input: $inpString")
-            val json = JSONObject(inpString)
-            if(json.has("success") && json.getBoolean("success")){
-                if (json.has("token")) {
-                    return json.getString("token")
-                }
-            }
-        } catch (e: JSONException) {
-            Log.e(this.javaClass.simpleName, e.message, e)
-        } catch (e: FileNotFoundException){
-            Log.e(this.javaClass.simpleName, e.message, e)
-        } finally {
-            inp?.close()
+        return try {
+            AuthDataResponse(cn.inputStream).token
+        } catch (e: Exception) {
+            null
         }
-
-        return null
     }
 
 }

@@ -4,7 +4,7 @@ import org.json.JSONArray
 import su.arq.arqviewer.entities.ARQBuild
 import java.io.InputStream
 
-class BuildsResponse(inputStream: InputStream): WebResponseBase(inputStream) {
+class BuildListResponse(inputStream: InputStream): WebResponseBase(inputStream) {
 
     val jsonBuilds: JSONArray = json.getJSONArray("builds")
     val builds: Array<ARQBuild>

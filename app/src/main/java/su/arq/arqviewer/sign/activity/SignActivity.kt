@@ -7,18 +7,18 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
-import su.arq.arqviewer.projects.ProjectsActivity
+import su.arq.arqviewer.projects.activity.ProjectsActivity
 import java.util.ArrayList
 import android.accounts.AccountManager
 import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.app.Activity
-import android.app.Fragment
 import android.util.Log
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.page.model.SignPageModel
 import su.arq.arqviewer.sign.page.adapter.SignPagerAdapter
 import su.arq.arqviewer.sign.fragment.SignInFragment
+import su.arq.arqviewer.utils.EXTRA_TOKEN
 
 
 class SignActivity : FragmentActivity() {
@@ -33,9 +33,6 @@ class SignActivity : FragmentActivity() {
 
     private var signInFragment: SignInFragment? = null
 
-    companion object {
-        const val EXTRA_TOKEN_TYPE = "su.arq.arqviewer.EXTRA_TOKEN_TYPE"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +83,7 @@ class SignActivity : FragmentActivity() {
         setResult(Activity.RESULT_OK)
 
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
-        intent.putExtra("EXTRA_TOKEN", token)
+        intent.putExtra(EXTRA_TOKEN, token)
         startActivity(intent)
 
         finish()
