@@ -9,6 +9,8 @@ import org.json.JSONObject
 import android.text.TextUtils
 import android.util.Log
 import su.arq.arqviewer.R
+import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
+import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.AuthDataResponse
 import java.io.*
 import java.lang.Exception
@@ -16,13 +18,24 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : AsyncTaskLoader<String>(context) {
+class ARQVAuthDataLoader(
+    context: Context,
+    login: String?,
+    password: String?
+) : AsyncTaskLoader<String>(context) {
 
     private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
     private val mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
     private val mLogin: String? = login
     private val mPassword: String? = password
     private var mAuthToken: String? = null
+
+    private var errorCallbackListeners: MutableList<WebAPIErrorCallbackListener> = mutableListOf()
+
+    fun addAuthErrorCallbackListeners(listener: WebAPIErrorCallbackListener) : ARQVAuthDataLoader{
+        errorCallbackListeners.add(listener)
+        return this
+    }
 
     companion object {
         @JvmStatic
@@ -34,7 +47,7 @@ class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : 
                     password
                 ).signIn()
             } catch (e: IOException) {
-                Log.e(ARQVAuthDataLoader.javaClass.simpleName, e.message, e)
+                Log.e(ARQVAuthDataLoader::class.java.simpleName, e.message, e)
             }
             return null
         }
@@ -71,9 +84,15 @@ class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : 
         cn.addRequestProperty("Content-Type", "application/json")
         sendBody(cn)
 
-        return readToken(cn)
-    }
+        if(responseCodeSuccess(cn.responseCode)){
+            return readToken(cn)
+        }
 
+        errorCallbackListeners.forEach {
+            it.error(cn.responseMessage, cn.responseCode)
+        }
+        return null
+    }
 
     @Throws(IOException::class)
     private fun sendBody(cn: HttpURLConnection) {
@@ -100,9 +119,13 @@ class ARQVAuthDataLoader(context: Context, login: String?, password: String?) : 
     private fun readToken(cn: HttpURLConnection): String? {
         return try {
             AuthDataResponse(cn.inputStream).token
+        } catch (ex: ResponseSuccessFalseException){
+            errorCallbackListeners.forEach { it.error(ex.message, null) }
+            null
         } catch (e: Exception) {
             null
         }
     }
 
+    private fun responseCodeSuccess(code: Int) = code in 200..299
 }

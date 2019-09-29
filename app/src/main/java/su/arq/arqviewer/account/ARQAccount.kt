@@ -3,7 +3,7 @@ package su.arq.arqviewer.account
 import android.accounts.Account
 import android.os.Parcel
 
-class ARQVAccount : Account {
+class ARQAccount : Account {
 
     constructor(`in`: Parcel) : super(`in`)
     constructor(name: String) : super(name, TYPE)

@@ -4,14 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 
-class ARQVAuthenticatorService : Service(){
+class ARQAuthenticatorService : Service(){
 
-    private lateinit var mAuthenticator: ARQVAuthenticator
+    private lateinit var mAuthenticator: ARQAuthenticator
 
     override fun onCreate() {
         super.onCreate()
         mAuthenticator =
-            ARQVAuthenticator(applicationContext)
+            ARQAuthenticator(applicationContext)
     }
 
     override fun onBind(intent: Intent?): IBinder? = mAuthenticator.iBinder

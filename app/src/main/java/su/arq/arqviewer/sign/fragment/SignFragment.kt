@@ -16,6 +16,11 @@ import su.arq.arqviewer.R
 open class SignFragment : Fragment(), View.OnClickListener {
 
     protected var isPasswordHidden = true
+    private var cursorStart: Int? = null
+    private var cursorEnd: Int? = null
+
+    private var currentBackgroundColor: Int? = null
+    private var currentTextColor: Int? = null
 
     companion object{
         const val ALPHA_ANIMATION_DURATION: Long = 250
@@ -28,18 +33,25 @@ open class SignFragment : Fragment(), View.OnClickListener {
     }
 
     protected open fun activateInput(text: TextView?, field: EditText?, container: View?) {
+        if(currentBackgroundColor == null){
+            currentBackgroundColor = resources.getColor(R.color.colorWhite, resources.newTheme())
+        }
+        if(currentTextColor == null){
+            currentTextColor = resources.getColor(R.color.textDarkColor, resources.newTheme())
+        }
+
         startBackgroundColorAnimation(
             container?.background,
-            resources.getColor(R.color.colorWhite, resources.newTheme()),
+            currentBackgroundColor ?: resources.getColor(R.color.colorWhite, resources.newTheme()),
             resources.getColor(R.color.colorAccent, resources.newTheme())
         )
 
-        field?.visibility = View.VISIBLE
+        //field?.visibility = View.VISIBLE
 
         startAlphaAnimation(text, 1.0f, 0.5f)
         startColorTextAnimation(
             text,
-            resources.getColor(R.color.textDarkColor, resources.newTheme()),
+            currentTextColor ?: resources.getColor(R.color.textDarkColor, resources.newTheme()),
             resources.getColor(R.color.colorWhite, resources.newTheme())
         )
 
@@ -49,20 +61,20 @@ open class SignFragment : Fragment(), View.OnClickListener {
         val inputMethodManager = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT)
 
-        field?.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        field?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
                 if (field?.text.toString() == "") {
                     startBackgroundColorAnimation(
                         container?.background,
-                        resources.getColor(R.color.colorAccent, resources.newTheme()),
+                        currentBackgroundColor ?: resources.getColor(R.color.colorAccent, resources.newTheme()),
                         resources.getColor(R.color.colorWhite, resources.newTheme())
                     )
 
-                    field?.visibility = View.INVISIBLE
+                    //field?.visibility = View.INVISIBLE
 
                     startColorTextAnimation(
                         text,
-                        resources.getColor(R.color.colorWhite, resources.newTheme()),
+                        currentTextColor ?: resources.getColor(R.color.colorWhite, resources.newTheme()),
                         resources.getColor(R.color.textDarkColor, resources.newTheme())
                     )
                     startAlphaAnimation(text, 0.5f, 1.0f)
@@ -71,6 +83,19 @@ open class SignFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    protected open fun activateInputFail(text: TextView?, field: EditText?, container: View?){
+        startBackgroundColorAnimation(
+            container?.background,
+            currentBackgroundColor ?: resources.getColor(R.color.colorAccent, resources.newTheme()),
+            resources.getColor(R.color.colorError, resources.newTheme())
+        )
+
+        startColorTextAnimation(
+            text,
+            currentTextColor ?: resources.getColor(R.color.colorWhite, resources.newTheme()),
+            resources.getColor(R.color.colorWhite, resources.newTheme())
+        )
+    }
 
     protected open fun startAlphaAnimation(view: View?, startValue: Float, endValue: Float) {
         val anim = ObjectAnimator.ofFloat(
@@ -99,9 +124,10 @@ open class SignFragment : Fragment(), View.OnClickListener {
             startValue,
             endValue
         )
-        anim.duration =
-            TEXT_COLOR_ANIMATION_DURATION
+        anim.duration = TEXT_COLOR_ANIMATION_DURATION
         anim.start()
+
+        currentTextColor = endValue
     }
 
     protected open fun startBackgroundColorAnimation(background: Drawable?, startValue: Int, endValue: Int) {
@@ -111,12 +137,16 @@ open class SignFragment : Fragment(), View.OnClickListener {
             startValue,
             endValue
         )
-        anim.duration =
-            BACKGROUND_COLOR_ANIMATION_DURATION
+        anim.duration = BACKGROUND_COLOR_ANIMATION_DURATION
         anim.start()
+
+        currentBackgroundColor = endValue
     }
 
     protected open fun showAndHidePassword(field: EditText?) {
+        cursorEnd = field?.selectionEnd
+        cursorStart = field?.selectionStart
+
         if (isPasswordHidden) {
             field?.transformationMethod = null
             isPasswordHidden = false
@@ -124,6 +154,7 @@ open class SignFragment : Fragment(), View.OnClickListener {
             field?.transformationMethod = PasswordTransformationMethod()
             isPasswordHidden = true
         }
+        field?.setSelection(cursorStart ?: 0, cursorEnd ?: 0)
     }
 
 }

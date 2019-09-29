@@ -1,7 +1,6 @@
 package su.arq.arqviewer.entities
 
 import org.json.JSONObject
-import su.arq.arqviewer.enums.BuildIcon
 
 class ARQBuild(json: JSONObject){
     var guid: String = json.getString("guid")

@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import su.arq.arqviewer.R
 import su.arq.arqviewer.projects.activity.ProjectsActivity
-import su.arq.arqviewer.account.ARQVAccount
+import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.utils.EXTRA_TOKEN
 import su.arq.arqviewer.walkthrough.WalkthroughActivity
 
@@ -21,7 +21,7 @@ class SplashScreenActivity : AppCompatActivity() {
         val intent: Intent
 
         val am = AccountManager.get(applicationContext)
-        val al = am.getAccountsByType(ARQVAccount.TYPE)
+        val al = am.getAccountsByType(ARQAccount.TYPE)
 
         intent = if(al.isNotEmpty()){
             for(ac in al)

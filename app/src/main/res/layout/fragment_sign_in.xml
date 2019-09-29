@@ -8,32 +8,37 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/sign_in_login_lay"
-        android:layout_width="@dimen/input_field_width"
+        android:layout_width="0dp"
         android:layout_height="@dimen/input_field_height"
         android:layout_marginTop="@dimen/space_between_fields"
+        android:layout_marginEnd="74dp"
         android:background="@drawable/field_rect"
         android:backgroundTint="#FFFFFF"
         android:elevation="@dimen/input_field_elevation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.33"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/sign_in_login_field"
-            android:layout_width="260dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginStart="42dp"
             android:layout_marginTop="18dp"
+            android:layout_marginEnd="22dp"
             android:layout_marginBottom="40dp"
             android:background="#00FFFFFF"
             android:ems="10"
             android:fontFamily="@font/ttnorms_bold"
-            android:inputType="text"
+            android:inputType="textEmailSubject"
             android:textColor="#FFFFFF"
             android:textCursorDrawable="@drawable/input_fields_cursor"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
@@ -57,18 +62,20 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/sign_in_password_lay"
-        android:layout_width="@dimen/input_field_width"
+        android:layout_width="0dp"
         android:layout_height="@dimen/input_field_height"
         android:layout_marginTop="@dimen/space_between_fields"
+        android:layout_marginEnd="74dp"
         android:background="@drawable/field_rect"
         android:backgroundTint="#FFFFFF"
         android:elevation="@dimen/input_field_elevation"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sign_in_login_lay">
 
         <EditText
             android:id="@+id/sign_in_password_field"
-            android:layout_width="224dp"
+            android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginStart="42dp"
             android:layout_marginTop="18dp"
@@ -82,11 +89,26 @@
             android:textCursorDrawable="@drawable/input_fields_cursor"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sign_in_aye_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
+
+        <ImageButton
+            android:id="@+id/sign_in_aye_image"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="34dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="34dp"
+            android:background="@drawable/back_btn_ripple"
+            android:focusable="false"
+            android:src="@drawable/ic_aye"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/sign_in_password_txt"
@@ -103,19 +125,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
-
-        <ImageButton
-            android:id="@+id/sign_in_aye_image"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="34dp"
-            android:background="@drawable/back_btn_ripple"
-            android:src="@drawable/ic_aye"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
 

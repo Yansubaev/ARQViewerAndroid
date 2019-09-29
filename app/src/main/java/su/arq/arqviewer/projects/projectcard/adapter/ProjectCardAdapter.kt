@@ -35,18 +35,6 @@ class ProjectCardAdapter (
     override fun getItemCount(): Int = cardModels?.size ?: 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-/*
-        holder.view.layoutParams = ViewGroup.LayoutParams(
-            holder.view.layoutParams.width,
-            holder.view.layoutParams.width
-            )
-*/
-/*
-        holder.view.layoutParams = ViewGroup.LayoutParams(
-            holder.view.layoutParams.width,
-            viewWidth ?: 150
-        )
-*/
         Log.d(this.javaClass.simpleName, "height = ${holder.view.layoutParams.height}")
         holder.view.layoutParams = ViewGroup.LayoutParams(-1, viewWidth ?: 100)
         holder.projectName?.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"

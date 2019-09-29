@@ -12,7 +12,7 @@ import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN_TYPE
 
-class ARQVAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
+class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
     override fun confirmCredentials(
         response: AccountAuthenticatorResponse?,
         account: Account?,

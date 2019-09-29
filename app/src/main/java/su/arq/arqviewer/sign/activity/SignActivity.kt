@@ -64,10 +64,9 @@ class SignActivity : FragmentActivity() {
     }
 
     fun onTokenReceived(account: Account, password: String?, token: String?) {
-        Log.i(this.javaClass.simpleName, "onTokenReceived: $token")
-
         val am = AccountManager.get(this)
         val result = Bundle()
+
         if (am.addAccountExplicitly(account, password, Bundle())) {
             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
@@ -79,6 +78,7 @@ class SignActivity : FragmentActivity() {
                 getString(R.string.account_already_exists)
             )
         }
+
         setAccountAuthenticatorResult(result)
         setResult(Activity.RESULT_OK)
 

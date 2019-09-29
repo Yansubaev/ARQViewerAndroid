@@ -1,5 +1,7 @@
 package su.arq.arqviewer.projects.activity
 
+import android.accounts.AccountManager
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
@@ -10,10 +12,12 @@ import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
 import android.util.Log
+import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.decor.GridSpacingItemDecoration
 import su.arq.arqviewer.projects.projectcard.adapter.ProjectCardAdapter
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
+import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN
 import kotlin.math.roundToInt
@@ -61,7 +65,12 @@ class ProjectsActivity :
     }
 
     fun quitProjects(view: View){
-        super.onBackPressed()
+        AccountManager.get(applicationContext).invalidateAuthToken(
+            ARQAccount.TYPE,
+            token
+        )
+        val intent = Intent(applicationContext, SignActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onItemClick(view: View?, position: Int) {
@@ -73,7 +82,6 @@ class ProjectsActivity :
     }
 
     override fun onLoadFinished(p0: Loader<Array<ARQBuild>>, builds: Array<ARQBuild>?) {
-        Log.d(this.javaClass.simpleName, "onLoadFinished: ${builds?.size}")
         builds?.forEach {
             projectModels?.add(
                 ProjectCardModel(
@@ -81,7 +89,6 @@ class ProjectsActivity :
                     it
                 )
             )
-            Log.d(this.javaClass.simpleName, "project: " + it.name)
         }
         updateProjectsGrid()
     }

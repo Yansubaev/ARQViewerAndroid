@@ -1,4 +1,4 @@
-package su.arq.arqviewer.enums
+package su.arq.arqviewer.entities
 
 import su.arq.arqviewer.R
 
