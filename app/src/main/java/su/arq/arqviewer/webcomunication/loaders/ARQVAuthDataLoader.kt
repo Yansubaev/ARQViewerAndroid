@@ -88,6 +88,8 @@ class ARQVAuthDataLoader(
             return readToken(cn)
         }
 
+        onCancelLoad()
+
         errorCallbackListeners.forEach {
             it.error(cn.responseMessage, cn.responseCode)
         }
@@ -120,7 +122,8 @@ class ARQVAuthDataLoader(
         return try {
             AuthDataResponse(cn.inputStream).token
         } catch (ex: ResponseSuccessFalseException){
-            errorCallbackListeners.forEach { it.error(ex.message, null) }
+            cancelLoad()
+            //errorCallbackListeners.forEach { it.error(ex.message, null) }
             null
         } catch (e: Exception) {
             null

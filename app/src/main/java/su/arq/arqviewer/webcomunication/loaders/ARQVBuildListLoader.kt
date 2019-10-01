@@ -31,7 +31,7 @@ class ARQVBuildListLoader (
     }
 
     override fun loadInBackground(): Array<ARQBuild>? {
-        return loadBuilds();
+        return loadBuildList();
     }
 
     override fun onStartLoading() {
@@ -48,7 +48,8 @@ class ARQVBuildListLoader (
     }
 
 
-    private fun loadBuilds() : Array<ARQBuild>?{
+
+    private fun loadBuildList() : Array<ARQBuild>?{
         val cn: HttpURLConnection = URL(mBaseUrl + mBuildsUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "GET"
@@ -57,15 +58,12 @@ class ARQVBuildListLoader (
 
         cn.connect()
 
-        Log.d(this.javaClass.simpleName, mToken)
-
         if(responseCodeSuccess(cn.responseCode)){
             return readInput(cn)
         }
 
-        errorCallbackListeners.forEach {
-            it.error(cn.responseMessage, cn.responseCode)
-        }
+        onCancelLoad()
+
         return null
     }
 
@@ -75,7 +73,8 @@ class ARQVBuildListLoader (
         }catch (ex: IOException){
             null
         }catch (ex: ResponseSuccessFalseException){
-            errorCallbackListeners.forEach { it.error(ex.message, null) }
+            //errorCallbackListeners.forEach { it.error(ex.message, null) }
+            onCancelLoad()
             null
         }finally {
             cn.inputStream.close()

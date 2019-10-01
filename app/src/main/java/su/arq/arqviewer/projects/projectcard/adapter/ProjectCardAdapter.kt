@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.ProgressBar
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
@@ -39,6 +40,7 @@ class ProjectCardAdapter (
         holder.view.layoutParams = ViewGroup.LayoutParams(-1, viewWidth ?: 100)
         holder.projectName?.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"
         holder.projectIcon?.setImageDrawable(cardModels?.get(position)?.icon)
+        cardModels?.get(position)?.progressBar = holder.progressBar
     }
 
     fun getItem(position: Int) : String = cardModels?.get(position)?.build?.name ?: "Error: NPE"
@@ -50,15 +52,15 @@ class ProjectCardAdapter (
     class ViewHolder(
         var view: View,
         var mClickListener: ItemClickListener?
-    )
-        : RecyclerView.ViewHolder(view), View.OnClickListener
-    {
+    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
         var projectName: TextView? = null
         var projectIcon: ImageView? = null
+        var progressBar: ProgressBar? = null
 
         init {
             this.projectName = view.findViewById(R.id.project_name_txt)
             this.projectIcon = view.findViewById(R.id.project_icon)
+            this.progressBar = view.findViewById(R.id.download_progress_bar)
             view.setOnClickListener(this)
         }
 
@@ -67,7 +69,6 @@ class ProjectCardAdapter (
                 mClickListener?.onItemClick(v, adapterPosition )
             }
         }
-
     }
 
     interface ItemClickListener {

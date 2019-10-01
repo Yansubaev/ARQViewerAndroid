@@ -21,6 +21,7 @@ import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT_NAME
 import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN
+import su.arq.arqviewer.webcomunication.loaders.ARQVBuildContentLoader
 import kotlin.math.roundToInt
 
 class ProjectsActivity :
@@ -77,7 +78,17 @@ class ProjectsActivity :
     }
 
     override fun onItemClick(view: View?, position: Int) {
-        
+        val buildModel = (projectsGrid?.adapter as ProjectCardAdapter).
+            cardModels?.get(position)
+
+        buildModel?.progressBar?.visibility = View.VISIBLE
+        buildModel?.progressBar?.isIndeterminate = true
+        val r = ARQVBuildContentLoader(
+            applicationContext,
+            token,
+            buildModel?.build?.guid,
+            buildModel?.progressBar
+        )
     }
 
     override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<Array<ARQBuild>> {

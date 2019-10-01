@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +23,10 @@ import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 class SignInFragment :
     Fragment(),
     LoaderManager.LoaderCallbacks<String>,
+    Loader.OnLoadCanceledListener<String>,
     WebAPIErrorCallbackListener
 {
+
     private var aye: ImageButton? = null
     private var mLoaderManager: LoaderManager? = null
 
@@ -84,11 +87,13 @@ class SignInFragment :
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<String> {
-        return ARQVAuthDataLoader(
+        val loader = ARQVAuthDataLoader(
                 activity!!.applicationContext,
                 loginField.text.toString(),
                 passwordField.text.toString()
             ).addAuthErrorCallbackListeners(this)
+        loader.registerOnLoadCanceledListener(this)
+        return loader
     }
 
     override fun onLoadFinished(loader: Loader<String>, token: String?) {
@@ -101,12 +106,16 @@ class SignInFragment :
         }
     }
 
-    override fun onLoaderReset(p0: Loader<String>) {
+    override fun onLoadCanceled(loader: Loader<String>) {
+        passwordInput.activateInputFail()
+        loginInput.activateInputFail()
+    }
+
+
+    override fun onLoaderReset(loader: Loader<String>) {
 
     }
 
     override fun error(message: String?, httpResponseCode: Int?) {
-        passwordInput.activateInputFail()
-        loginInput.activateInputFail()
     }
 }

@@ -11,7 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import su.arq.arqviewer.R
-import su.arq.arqviewer.sign.fragment.SignFragment
+import android.R.attr.start
+//import android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import android.support.v4.os.HandlerCompat.postDelayed
+import android.os.Handler
+
 
 open class InputFieldAnimations(
     protected var context: Context,
@@ -125,10 +129,10 @@ open class InputFieldAnimations(
         anim.start()
 
         anim.addUpdateListener { animation ->
-            val value = animation.getAnimatedValue("alpha") as Float
+            val alphaValue = animation.getAnimatedValue("alpha") as Float
 
             val params = view?.layoutParams as ConstraintLayout.LayoutParams
-            params.verticalBias = 1.5f - value
+            params.verticalBias = 1.5f - alphaValue
             view.layoutParams = params
         }
     }
