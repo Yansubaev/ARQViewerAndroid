@@ -49,7 +49,7 @@ open class InputFieldAnimations(
         }
     }
 
-    protected open fun activateInput() {
+    open fun activateInput() {
         if(currentBackgroundColor == null){
             currentBackgroundColor = whiteColor
         }
@@ -63,7 +63,7 @@ open class InputFieldAnimations(
             accentColor
         )
 
-        //inputText?.visibility = View.VISIBLE
+        inputText?.visibility = View.VISIBLE
 
         startAlphaAnimation(caption, 1.0f, 0.5f)
         startColorTextAnimation(
@@ -87,7 +87,7 @@ open class InputFieldAnimations(
                         whiteColor
                     )
 
-                    //inputText?.visibility = View.INVISIBLE
+                    inputText?.visibility = View.INVISIBLE
 
                     startColorTextAnimation(
                         caption,
@@ -100,7 +100,7 @@ open class InputFieldAnimations(
         }
     }
 
-    protected open fun activateInputFail(){
+    open fun activateInputFail(){
         startBackgroundColorAnimation(
             container?.background,
             currentBackgroundColor ?: accentColor,
@@ -121,8 +121,7 @@ open class InputFieldAnimations(
             startValue,
             endValue
         )
-        anim.duration =
-            SignFragment.ALPHA_ANIMATION_DURATION
+        anim.duration = ALPHA_ANIMATION_DURATION
         anim.start()
 
         anim.addUpdateListener { animation ->
@@ -141,7 +140,7 @@ open class InputFieldAnimations(
             startValue,
             endValue
         )
-        anim.duration = SignFragment.TEXT_COLOR_ANIMATION_DURATION
+        anim.duration = TEXT_COLOR_ANIMATION_DURATION
         anim.start()
 
         currentTextColor = endValue
@@ -154,7 +153,7 @@ open class InputFieldAnimations(
             startValue,
             endValue
         )
-        anim.duration = SignFragment.BACKGROUND_COLOR_ANIMATION_DURATION
+        anim.duration = BACKGROUND_COLOR_ANIMATION_DURATION
         anim.start()
 
         currentBackgroundColor = endValue

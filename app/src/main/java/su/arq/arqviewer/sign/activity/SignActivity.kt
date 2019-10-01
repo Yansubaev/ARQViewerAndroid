@@ -13,11 +13,11 @@ import android.accounts.AccountManager
 import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.app.Activity
-import android.util.Log
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.page.model.SignPageModel
 import su.arq.arqviewer.sign.page.adapter.SignPagerAdapter
 import su.arq.arqviewer.sign.fragment.SignInFragment
+import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT_NAME
 import su.arq.arqviewer.utils.EXTRA_TOKEN
 
 
@@ -72,6 +72,7 @@ class SignActivity : FragmentActivity() {
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
             result.putString(AccountManager.KEY_AUTHTOKEN, token)
             am.setAuthToken(account, account.type, token)
+
         } else {
             result.putString(
                 AccountManager.KEY_ERROR_MESSAGE,
@@ -83,7 +84,7 @@ class SignActivity : FragmentActivity() {
         setResult(Activity.RESULT_OK)
 
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
-        intent.putExtra(EXTRA_TOKEN, token)
+        intent.putExtra(EXTRA_TOKEN, token).putExtra(EXTRA_ARQ_ACCOUNT_NAME, account.name)
         startActivity(intent)
 
         finish()

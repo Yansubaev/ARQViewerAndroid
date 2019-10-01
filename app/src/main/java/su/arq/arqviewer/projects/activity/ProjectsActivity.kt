@@ -1,5 +1,6 @@
 package su.arq.arqviewer.projects.activity
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -11,13 +12,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
-import android.util.Log
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.decor.GridSpacingItemDecoration
 import su.arq.arqviewer.projects.projectcard.adapter.ProjectCardAdapter
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
 import su.arq.arqviewer.sign.activity.SignActivity
+import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT_NAME
 import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN
 import kotlin.math.roundToInt
@@ -33,6 +34,7 @@ class ProjectsActivity :
     private var mLoaderManager: LoaderManager? = null
     private var token: String? = null
     private var itemHeight: Int? = null
+    private var account: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,7 @@ class ProjectsActivity :
         mLoaderManager = LoaderManager.getInstance(this)
         projectModels = ArrayList()
         token = intent?.getStringExtra(EXTRA_TOKEN)
+        account = intent?.getStringExtra(EXTRA_ARQ_ACCOUNT_NAME)
         projectAdapter?.setOnClickListener(this)
 
         val metrics = DisplayMetrics()
@@ -65,12 +68,12 @@ class ProjectsActivity :
     }
 
     fun quitProjects(view: View){
-        AccountManager.get(applicationContext).invalidateAuthToken(
-            ARQAccount.TYPE,
-            token
-        )
+        val am = AccountManager.get(applicationContext)
+        am.removeAccountExplicitly(ARQAccount(account ?: ""))
+
         val intent = Intent(applicationContext, SignActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     override fun onItemClick(view: View?, position: Int) {

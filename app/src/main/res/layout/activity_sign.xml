@@ -44,6 +44,8 @@
         android:background="@drawable/back_btn_ripple"
         android:contentDescription="Back button"
         android:elevation="@dimen/back_btn_elevation"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:onClick="backButton"
         android:src="@drawable/ic_arrow_left"
         app:layout_constraintStart_toStartOf="parent"

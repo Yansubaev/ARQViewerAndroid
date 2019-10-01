@@ -19,7 +19,11 @@ import su.arq.arqviewer.sign.InputFieldAnimations
 import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 
-class SignInFragment : Fragment(), LoaderManager.LoaderCallbacks<String>, WebAPIErrorCallbackListener {
+class SignInFragment :
+    Fragment(),
+    LoaderManager.LoaderCallbacks<String>,
+    WebAPIErrorCallbackListener
+{
     private var aye: ImageButton? = null
     private var mLoaderManager: LoaderManager? = null
 
@@ -49,6 +53,18 @@ class SignInFragment : Fragment(), LoaderManager.LoaderCallbacks<String>, WebAPI
         passwordInput = InputFieldAnimations(context!!, passwordTxt, passwordField, passwordLay)
         passwordLay.setOnClickListener(passwordInput)
 
+        loginField.setOnFocusChangeListener { _, hasFocus ->
+            if(!hasFocus){
+                passwordField.requestFocus()
+                passwordInput.activateInput()
+            }
+        }
+        passwordField.setOnFocusChangeListener { _, hasFocus ->
+            if(!hasFocus){
+                signIn()
+            }
+        }
+
         aye = rootView.findViewById(R.id.sign_in_aye_image)
         aye?.setOnClickListener(passwordInput)
 
@@ -58,9 +74,12 @@ class SignInFragment : Fragment(), LoaderManager.LoaderCallbacks<String>, WebAPI
 
     fun signIn(){
         when {
-            TextUtils.isEmpty(loginField.text) -> loginField.error = getString(R.string.login)
-            TextUtils.isEmpty(passwordField.text) -> passwordField.error = getString(R.string.password)
-            else -> mLoaderManager?.restartLoader(R.id.auth_data_loader, null, this)
+            TextUtils.isEmpty(loginField.text) ->
+                loginField.error = getString(R.string.login)
+            TextUtils.isEmpty(passwordField.text) ->
+                passwordField.error = getString(R.string.password)
+            else ->
+                mLoaderManager?.restartLoader(R.id.auth_data_loader, null, this)
         }
     }
 
@@ -87,6 +106,7 @@ class SignInFragment : Fragment(), LoaderManager.LoaderCallbacks<String>, WebAPI
     }
 
     override fun error(message: String?, httpResponseCode: Int?) {
-
+        passwordInput.activateInputFail()
+        loginInput.activateInputFail()
     }
 }
