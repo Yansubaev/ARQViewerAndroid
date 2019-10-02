@@ -33,8 +33,9 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_power" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/projects_grid"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/projects_refresh_lay"
+        style="@style/ARQVTheme"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -42,7 +43,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/projects_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </android.support.constraint.ConstraintLayout>

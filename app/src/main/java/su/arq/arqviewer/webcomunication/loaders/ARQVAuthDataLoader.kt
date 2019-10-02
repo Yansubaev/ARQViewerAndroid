@@ -9,7 +9,6 @@ import org.json.JSONObject
 import android.text.TextUtils
 import android.util.Log
 import su.arq.arqviewer.R
-import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.AuthDataResponse
 import java.io.*
@@ -29,13 +28,6 @@ class ARQVAuthDataLoader(
     private val mLogin: String? = login
     private val mPassword: String? = password
     private var mAuthToken: String? = null
-
-    private var errorCallbackListeners: MutableList<WebAPIErrorCallbackListener> = mutableListOf()
-
-    fun addAuthErrorCallbackListeners(listener: WebAPIErrorCallbackListener) : ARQVAuthDataLoader{
-        errorCallbackListeners.add(listener)
-        return this
-    }
 
     companion object {
         @JvmStatic
@@ -90,9 +82,6 @@ class ARQVAuthDataLoader(
 
         onCancelLoad()
 
-        errorCallbackListeners.forEach {
-            it.error(cn.responseMessage, cn.responseCode)
-        }
         return null
     }
 
@@ -123,7 +112,6 @@ class ARQVAuthDataLoader(
             AuthDataResponse(cn.inputStream).token
         } catch (ex: ResponseSuccessFalseException){
             cancelLoad()
-            //errorCallbackListeners.forEach { it.error(ex.message, null) }
             null
         } catch (e: Exception) {
             null

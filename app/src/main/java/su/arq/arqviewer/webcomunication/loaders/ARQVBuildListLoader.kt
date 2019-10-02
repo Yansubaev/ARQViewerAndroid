@@ -5,7 +5,6 @@ import android.support.v4.content.AsyncTaskLoader
 import android.util.Log
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
-import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.BuildListResponse
 import java.io.IOException
@@ -23,15 +22,8 @@ class ARQVBuildListLoader (
     private val mToken: String = token ?: ""
     private var builds: Array<ARQBuild>? = null
 
-    private var errorCallbackListeners: MutableList<WebAPIErrorCallbackListener> = mutableListOf()
-
-    fun addAuthErrorCallbackListeners(listener: WebAPIErrorCallbackListener) : ARQVBuildListLoader{
-        errorCallbackListeners.add(listener)
-        return this
-    }
-
     override fun loadInBackground(): Array<ARQBuild>? {
-        return loadBuildList();
+        return loadBuildList()
     }
 
     override fun onStartLoading() {

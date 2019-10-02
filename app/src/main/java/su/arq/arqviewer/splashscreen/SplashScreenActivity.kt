@@ -1,4 +1,4 @@
-package su.arq.arqviewer.splash
+package su.arq.arqviewer.splashscreen
 
 import android.accounts.AccountManager
 import android.content.Intent

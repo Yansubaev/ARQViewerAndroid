@@ -17,14 +17,12 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.sign.InputFieldAnimations
-import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 
 class SignInFragment :
     Fragment(),
     LoaderManager.LoaderCallbacks<String>,
-    Loader.OnLoadCanceledListener<String>,
-    WebAPIErrorCallbackListener
+    Loader.OnLoadCanceledListener<String>
 {
 
     private var aye: ImageButton? = null
@@ -91,7 +89,7 @@ class SignInFragment :
                 activity!!.applicationContext,
                 loginField.text.toString(),
                 passwordField.text.toString()
-            ).addAuthErrorCallbackListeners(this)
+            )
         loader.registerOnLoadCanceledListener(this)
         return loader
     }
@@ -114,8 +112,5 @@ class SignInFragment :
 
     override fun onLoaderReset(loader: Loader<String>) {
 
-    }
-
-    override fun error(message: String?, httpResponseCode: Int?) {
     }
 }

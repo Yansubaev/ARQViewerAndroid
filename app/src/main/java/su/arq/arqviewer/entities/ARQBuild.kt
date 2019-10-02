@@ -14,5 +14,6 @@ class ARQBuild(json: JSONObject){
         6 -> BuildIcon.MANUFACTURE
         else -> BuildIcon.DEFAULT
     }
+    var downloaded: Boolean = false
 
 }

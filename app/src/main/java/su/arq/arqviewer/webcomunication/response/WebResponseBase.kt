@@ -1,9 +1,7 @@
 package su.arq.arqviewer.webcomunication.response
 
 import android.util.Log
-import org.json.JSONObject
-import su.arq.arqviewer.webcomunication.callbacks.error.WebAPIErrorCallbackListener
-import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
+import org.json.JSONObject import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import java.io.BufferedInputStream
 import java.io.InputStream
 

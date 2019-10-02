@@ -10,6 +10,9 @@
 
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
 
     <application
         android:allowBackup="true"
@@ -20,7 +23,7 @@
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".splash.SplashScreenActivity"
+            android:name=".splashscreen.SplashScreenActivity"
             android:theme="@style/ARQVTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

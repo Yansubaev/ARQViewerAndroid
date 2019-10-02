@@ -41,9 +41,11 @@ class ProjectCardAdapter (
         holder.projectName?.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"
         holder.projectIcon?.setImageDrawable(cardModels?.get(position)?.icon)
         cardModels?.get(position)?.progressBar = holder.progressBar
+        cardModels?.get(position)?.cloudIcon = holder.cloudIcon
+        cardModels?.get(position)?.name = holder.projectName
     }
 
-    fun getItem(position: Int) : String = cardModels?.get(position)?.build?.name ?: "Error: NPE"
+    fun getItem(position: Int) : ProjectCardModel? = cardModels?.get(position)
 
     fun setOnClickListener(itemClickListener: ItemClickListener) {
         this.mClickListener = itemClickListener
@@ -56,11 +58,13 @@ class ProjectCardAdapter (
         var projectName: TextView? = null
         var projectIcon: ImageView? = null
         var progressBar: ProgressBar? = null
+        var cloudIcon: ImageView? = null
 
         init {
             this.projectName = view.findViewById(R.id.project_name_txt)
             this.projectIcon = view.findViewById(R.id.project_icon)
             this.progressBar = view.findViewById(R.id.download_progress_bar)
+            this.cloudIcon = view.findViewById(R.id.cloud_icon)
             view.setOnClickListener(this)
         }
 
