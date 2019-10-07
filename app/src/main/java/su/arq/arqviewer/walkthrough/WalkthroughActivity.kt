@@ -58,6 +58,7 @@ class WalkthroughActivity : AppCompatActivity() {
                 Uri.parse(applicationContext.getString(R.string.arq_website))
             )
             startActivity(browserIntent)
+            finish()
         }
     }
 

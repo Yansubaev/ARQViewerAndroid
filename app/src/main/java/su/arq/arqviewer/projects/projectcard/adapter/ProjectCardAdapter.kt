@@ -1,6 +1,8 @@
 package su.arq.arqviewer.projects.projectcard.adapter
 
+import android.animation.ValueAnimator
 import android.content.Context
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
@@ -12,18 +14,27 @@ import android.widget.ProgressBar
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
+import kotlin.math.roundToInt
 
 class ProjectCardAdapter (
     var cardModels: List<ProjectCardModel>?,
-    var context: Context?
-)
-    : RecyclerView.Adapter<ProjectCardAdapter.ViewHolder>()
-{
+    var context: Context?,
+    var density: Float
+) : RecyclerView.Adapter<ProjectCardAdapter.ViewHolder>() {
+
     private var mClickListener: ItemClickListener? = null
+    lateinit var holder: ViewHolder
     var viewWidth: Int? = null
 
+    private var onBindViewHolder:
+            MutableList<((holder: ViewHolder, position: Int) -> Unit)> = mutableListOf()
+
+    fun addOnBindViewHolderListener(m: (holder: ViewHolder, position: Int) -> Unit){
+        onBindViewHolder.add(m)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
+        holder =  ViewHolder(
             LayoutInflater.from(context).inflate(
                 R.layout.project_card_item,
                 parent,
@@ -31,18 +42,18 @@ class ProjectCardAdapter (
             ),
             mClickListener
         )
+        holder.density = density
+        return holder
     }
 
     override fun getItemCount(): Int = cardModels?.size ?: 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.d(this.javaClass.simpleName, "height = ${holder.view.layoutParams.height}")
         holder.view.layoutParams = ViewGroup.LayoutParams(-1, viewWidth ?: 100)
-        holder.projectName?.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"
-        holder.projectIcon?.setImageDrawable(cardModels?.get(position)?.icon)
-        cardModels?.get(position)?.progressBar = holder.progressBar
-        cardModels?.get(position)?.cloudIcon = holder.cloudIcon
-        cardModels?.get(position)?.name = holder.projectName
+        holder.projectName.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"
+        holder.projectIcon.setImageDrawable(cardModels?.get(position)?.icon)
+        cardModels?.get(position)?.holder = holder
+        onBindViewHolder.forEach { it(holder, position) }
     }
 
     fun getItem(position: Int) : ProjectCardModel? = cardModels?.get(position)
@@ -55,23 +66,64 @@ class ProjectCardAdapter (
         var view: View,
         var mClickListener: ItemClickListener?
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        var projectName: TextView? = null
-        var projectIcon: ImageView? = null
-        var progressBar: ProgressBar? = null
-        var cloudIcon: ImageView? = null
+
+        var projectName: TextView = view.findViewById(R.id.project_name_txt)
+        var projectIcon: ImageView = view.findViewById(R.id.project_icon)
+        var progressBar: ProgressBar = view.findViewById(R.id.download_progress_bar)
+        var cloudIcon: ImageView = view.findViewById(R.id.cloud_icon)
+        var density: Float? = null
 
         init {
-            this.projectName = view.findViewById(R.id.project_name_txt)
-            this.projectIcon = view.findViewById(R.id.project_icon)
-            this.progressBar = view.findViewById(R.id.download_progress_bar)
-            this.cloudIcon = view.findViewById(R.id.cloud_icon)
             view.setOnClickListener(this)
+        }
+
+        companion object{
+            var animationDuration = 250L
+            var animationDelay = 100L
+            var leftNamePosition = 12
+            var rightNamePosition = 38
         }
 
         override fun onClick(v: View?) {
             if(mClickListener != null){
                 mClickListener?.onItemClick(v, adapterPosition )
             }
+        }
+
+        fun downloadedAnimate(){
+            val animator: ValueAnimator = ValueAnimator.ofInt(
+                (rightNamePosition * (density ?: 1f)).roundToInt(),
+                (leftNamePosition * (density ?: 1f)).roundToInt()
+            )
+            animator.duration = animationDuration
+            animator.startDelay = animationDelay
+
+            animator.addUpdateListener {
+                val params = projectName.layoutParams as ConstraintLayout.LayoutParams
+                params.marginStart = it.animatedValue as Int
+                projectName.layoutParams = params
+            }
+
+            progressBar.postDelayed({progressBar.visibility = View.GONE}, animationDelay)
+            cloudIcon.postDelayed({cloudIcon.visibility = View.GONE}, animationDelay)
+            animator.setupStartValues()
+            animator.start()
+        }
+
+        fun downloaded(){
+            progressBar.visibility = View.GONE
+            cloudIcon.visibility = View.GONE
+            val params = projectName.layoutParams as ConstraintLayout.LayoutParams
+            params.marginStart = (leftNamePosition * (density ?: 1f)).roundToInt()
+            projectName.layoutParams = params
+        }
+
+        fun startDownloading(){
+            progressBar.visibility = View.VISIBLE
+            cloudIcon.visibility = View.GONE
+            val params = projectName.layoutParams as ConstraintLayout.LayoutParams
+            params.marginStart = (rightNamePosition * (density ?: 1f)).roundToInt()
+            projectName.layoutParams = params
         }
     }
 

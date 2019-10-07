@@ -16,6 +16,7 @@ fun cloudVisible(
 ){
     val animator: ValueAnimator = ValueAnimator.ofInt(start, end)
     animator.duration = 250L
+    animator.startDelay = 100L
     animator.addUpdateListener {
         val params = name?.layoutParams as ConstraintLayout.LayoutParams
         params.marginStart = it.animatedValue as Int
@@ -23,26 +24,10 @@ fun cloudVisible(
     }
     cloud?.visibility = View.VISIBLE
     progressBar?.visibility = View.INVISIBLE
+    animator.start()
 }
 
 fun progressVisible(cloud: ImageView?, progressBar: ProgressBar?, name: TextView?){
     cloud?.visibility = View.INVISIBLE
     progressBar?.visibility = View.VISIBLE
-}
-
-fun nothingVisible(
-    cloud: ImageView?,
-    progressBar: ProgressBar?,
-    name: TextView?,
-    start: Int,
-    end: Int
-){
-    val animator: ValueAnimator = ValueAnimator.ofInt(start, end)
-    animator.duration = 250L
-    animator.addUpdateListener {
-        val params = name?.layoutParams as ConstraintLayout.LayoutParams
-        params.marginStart = it.animatedValue as Int
-    }
-    cloud?.visibility = View.VISIBLE
-    progressBar?.visibility = View.INVISIBLE
 }

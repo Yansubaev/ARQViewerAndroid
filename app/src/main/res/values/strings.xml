@@ -17,4 +17,6 @@
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
     <string name="project_icon">Иконка проекта</string>
+    <string name="project_in_cloud">Проект находится в облаке</string>
+    <string name="email_or_login">E-mail или логин</string>
 </resources>

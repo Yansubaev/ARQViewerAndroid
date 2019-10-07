@@ -1,10 +1,8 @@
 package su.arq.arqviewer.projects.activity
 
 import android.accounts.AccountManager
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -17,11 +15,8 @@ import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
 import android.util.Log
-import android.widget.ProgressBar
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.ARQBuild
-import su.arq.arqviewer.projects.nothingVisible
-import su.arq.arqviewer.projects.progressVisible
 import su.arq.arqviewer.projects.projectcard.decor.GridSpacingItemDecoration
 import su.arq.arqviewer.projects.projectcard.adapter.ProjectCardAdapter
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
@@ -47,12 +42,11 @@ class ProjectsActivity :
     private var token: String? = null
     private var itemHeight: Int? = null
     private var account: String? = null
-    private var logicalDensity: Float = 1f
+    private var density: Float = 1f
 
     private var refreshLay: SwipeRefreshLayout? = null
 
-    private var tempGuid: String? = null
-    private var tempProgressBar: ProgressBar? = null
+    private var tempProjectModel: ProjectCardModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,17 +65,17 @@ class ProjectsActivity :
 
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
-        logicalDensity = metrics.density
+        density = metrics.density
 
         val itemDecoration = GridSpacingItemDecoration(
             spanCount,
-            (22 * logicalDensity).roundToInt(),
+            (22 * density).roundToInt(),
             true
         )
-        itemHeight = (metrics.widthPixels/2 - 33*logicalDensity).roundToInt()
+        itemHeight = (metrics.widthPixels/2 - 33*density).roundToInt()
         projectAdapter?.viewWidth = itemHeight
 
-        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context)
+        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context, density)
         projectsGrid?.addItemDecoration(itemDecoration)
         projectsGrid?.adapter = projectAdapter
         mLoaderManager?.restartLoader(R.id.builds_loader, null, this)
@@ -97,32 +91,30 @@ class ProjectsActivity :
 
         val intent = Intent(applicationContext, SignActivity::class.java)
         startActivity(intent)
+
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        intent.putExtra("FROM_ACTIVITY", "Projects")
+
         finish()
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     override fun onItemClick(view: View?, position: Int) {
-        val buildModel = (projectsGrid?.adapter as ProjectCardAdapter).getItem(position)
+        val model = (projectsGrid?.adapter as ProjectCardAdapter).getItem(position)
 
-        if(buildModel?.build?.downloaded == false){
-            buildModel.progressBar?.visibility = View.VISIBLE
-            buildModel.progressBar?.isIndeterminate = true
-            buildModel.build.downloaded = true
+        if(model?.build?.downloaded == false) {
+            model.build.downloaded = true
 
-            tempGuid = buildModel.build.guid
-            tempProgressBar = buildModel.progressBar
-            buildModel.cloudIcon?.visibility = View.INVISIBLE
-            progressVisible(buildModel.cloudIcon, buildModel.progressBar, buildModel.name)
+            tempProjectModel = model
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                requestPermissions(
-                    arrayOf(
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE
-                    ),
-                    228
-                )
-            }
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                228
+            )
+        } else {
+            Log.d(this.javaClass.simpleName, model?.holder?.projectName?.text.toString())
         }
 
     }
@@ -144,30 +136,26 @@ class ProjectsActivity :
     override fun onLoaderReset(p0: Loader<Array<ARQBuild>>) {  }
 
     private fun updateProjectsGrid(){
-        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context)
+        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context, density)
         projectAdapter?.setOnClickListener(this)
-
         projectAdapter?.viewWidth = itemHeight
-        projectsGrid?.adapter = projectAdapter
-        (projectsGrid?.adapter as ProjectCardAdapter).cardModels?.forEach{
-            if(existInDevice(it.build)){
-                it.build.downloaded = true
-                nothingVisible(
-                    it.cloudIcon,
-                    it.progressBar,
-                    it.name,
-                    (38*logicalDensity).roundToInt(),
-                    (12*logicalDensity).roundToInt()
-                )
+
+        projectAdapter?.addOnBindViewHolderListener { holder, position ->
+            val build = projectAdapter?.cardModels?.get(position)?.build
+            if(existInDevice(build) ){
+                build?.downloaded = true
+                holder.downloaded()
             }
         }
+
+        projectsGrid?.adapter = projectAdapter
     }
 
-    private fun existInDevice(build: ARQBuild): Boolean{
+    private fun existInDevice(build: ARQBuild?): Boolean{
         return try {
             val apkStorage = File("${filesDir.absolutePath}/$account")
             if(apkStorage.exists()){
-                val outputFile = File(apkStorage, "${build.guid}.arq")
+                val outputFile = File(apkStorage, "${build?.guid}.arq")
                 outputFile.exists()
             }else{
                 false
@@ -191,7 +179,7 @@ class ProjectsActivity :
 
                 if (!apkStorage.exists()) { apkStorage.mkdir() }
 
-                val outputFile = File(apkStorage, "$tempGuid.arq")
+                val outputFile = File(apkStorage, "${tempProjectModel?.build?.guid}.arq")
 
                 if (!outputFile.exists()) {
                     outputFile.createNewFile()
@@ -201,16 +189,13 @@ class ProjectsActivity :
                 ARQVBuildContentLoader(
                     applicationContext,
                     token,
-                    tempGuid,
                     outputFile,
-                    tempProgressBar
+                    tempProjectModel
                 ).execute()
             }catch (ex: Exception){
                 Log.e(this.javaClass.simpleName, ex.message, ex)
             }
-
-            tempGuid = null
-            tempProgressBar = null
+            tempProjectModel = null
         }else{
             requestPermissions(arrayOf(
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE,

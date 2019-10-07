@@ -43,7 +43,13 @@ class SignActivity : FragmentActivity() {
             mAccountAuthenticatorResponse?.onRequestContinued()
         }
 
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        val from = intent.getStringExtra("FROM_ACTIVITY")
+        if(from == "Projects"){
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
+        }else{
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         setContentView(R.layout.activity_sign)
 
         setWindowsFlags()
