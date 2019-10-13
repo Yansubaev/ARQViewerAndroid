@@ -2,8 +2,6 @@ package su.arq.arqviewer.projects.projectcard.adapter
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.constraint.ConstraintLayout
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +9,8 @@ import android.widget.TextView
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel

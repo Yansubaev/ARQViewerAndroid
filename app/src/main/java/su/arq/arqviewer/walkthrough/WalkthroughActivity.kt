@@ -1,14 +1,14 @@
 package su.arq.arqviewer.walkthrough
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.view.ViewPager
 import android.view.View
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import android.content.Intent
 import android.net.Uri
 import android.util.DisplayMetrics
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import kotlin.math.roundToInt
 
 class WalkthroughActivity : AppCompatActivity() {

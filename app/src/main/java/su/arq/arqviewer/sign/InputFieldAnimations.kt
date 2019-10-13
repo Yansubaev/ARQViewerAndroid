@@ -4,18 +4,13 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
-import android.support.constraint.ConstraintLayout
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import su.arq.arqviewer.R
-import android.R.attr.start
-//import android.support.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import android.support.v4.os.HandlerCompat.postDelayed
-import android.os.Handler
-
 
 open class InputFieldAnimations(
     protected var context: Context,

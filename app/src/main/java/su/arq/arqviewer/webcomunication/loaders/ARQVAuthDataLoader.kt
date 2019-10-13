@@ -1,13 +1,12 @@
 package su.arq.arqviewer.webcomunication.loaders
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
 
 import org.json.JSONException
 import org.json.JSONObject
 
-import android.text.TextUtils
 import android.util.Log
+import androidx.loader.content.AsyncTaskLoader
 import su.arq.arqviewer.R
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.AuthDataResponse
@@ -16,22 +15,21 @@ import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
-
 class ARQVAuthDataLoader(
     context: Context,
     login: String?,
     password: String?
-) : AsyncTaskLoader<String>(context) {
+) : AsyncTaskLoader<AuthDataResponse>(context) {
 
     private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
     private val mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
     private val mLogin: String? = login
     private val mPassword: String? = password
-    private var mAuthToken: String? = null
+    private var authData: AuthDataResponse? = null
 
     companion object {
         @JvmStatic
-        fun signIn(context: Context, login: String?, password: String?): String? {
+        fun signIn(context: Context, login: String?, password: String?): AuthDataResponse? {
             try {
                 return ARQVAuthDataLoader(
                     context,
@@ -46,19 +44,19 @@ class ARQVAuthDataLoader(
     }
 
     override fun onStartLoading() {
-        if (TextUtils.isEmpty(mAuthToken)) {
+        if (authData == null) {
             forceLoad()
         } else {
-            deliverResult(mAuthToken)
+            deliverResult(authData)
         }
     }
 
-    override fun deliverResult(data: String?) {
-        mAuthToken = data
+    override fun deliverResult(data: AuthDataResponse?) {
+        authData = data
         super.deliverResult(data)
     }
 
-    override fun loadInBackground(): String? {
+    override fun loadInBackground(): AuthDataResponse? {
         try {
             return signIn()
         } catch (e: IOException) {
@@ -69,7 +67,7 @@ class ARQVAuthDataLoader(
     }
 
     @Throws(IOException::class)
-    private fun signIn(): String? {
+    private fun signIn(): AuthDataResponse? {
         val cn: HttpURLConnection = URL(mBaseUrl + mSignInUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "POST"
@@ -107,9 +105,9 @@ class ARQVAuthDataLoader(
     }
 
     @Throws(IOException::class)
-    private fun readToken(cn: HttpURLConnection): String? {
+    private fun readToken(cn: HttpURLConnection): AuthDataResponse? {
         return try {
-            AuthDataResponse(cn.inputStream).token
+            AuthDataResponse(cn.inputStream)
         } catch (ex: ResponseSuccessFalseException){
             cancelLoad()
             null

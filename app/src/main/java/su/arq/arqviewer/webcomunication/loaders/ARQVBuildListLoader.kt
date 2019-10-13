@@ -1,8 +1,8 @@
 package su.arq.arqviewer.webcomunication.loaders
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
 import android.util.Log
+import androidx.loader.content.AsyncTaskLoader
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
@@ -13,7 +13,8 @@ import java.net.URL
 
 class ARQVBuildListLoader (
     context: Context,
-    token: String?
+    token: String?,
+    accountName: String
 ) : AsyncTaskLoader<Array<ARQBuild>>(context){
 
     private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
@@ -21,6 +22,7 @@ class ARQVBuildListLoader (
 
     private val mToken: String = token ?: ""
     private var builds: Array<ARQBuild>? = null
+    private val accountName: String = accountName
 
     override fun loadInBackground(): Array<ARQBuild>? {
         return loadBuildList()
@@ -61,7 +63,7 @@ class ARQVBuildListLoader (
 
     private fun readInput(cn: HttpURLConnection): Array<ARQBuild>?{
         return try{
-            BuildListResponse(cn.inputStream).builds
+            BuildListResponse(cn.inputStream, context, accountName).builds
         }catch (ex: IOException){
             null
         }catch (ex: ResponseSuccessFalseException){

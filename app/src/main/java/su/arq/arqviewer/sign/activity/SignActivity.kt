@@ -2,9 +2,6 @@ package su.arq.arqviewer.sign.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.TextView
 import su.arq.arqviewer.projects.activity.ProjectsActivity
@@ -13,6 +10,10 @@ import android.accounts.AccountManager
 import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.app.Activity
+import android.widget.ImageButton
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.page.model.SignPageModel
 import su.arq.arqviewer.sign.page.adapter.SignPagerAdapter
@@ -23,16 +24,17 @@ import su.arq.arqviewer.utils.EXTRA_TOKEN
 
 class SignActivity : FragmentActivity() {
 
-    private var viewPager: ViewPager? = null
     private var models: MutableList<SignPageModel>? = null
     private var pagerAdapter: PagerAdapter? = null
-    private var auth:TextView? = null
+
+    private lateinit var viewPager: ViewPager
+    private lateinit var auth: TextView
+    private lateinit var signButton: ImageButton
 
     private var mAccountAuthenticatorResponse: AccountAuthenticatorResponse? = null
     private var mResultBundle: Bundle? = null
 
     private var signInFragment: SignInFragment? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +53,6 @@ class SignActivity : FragmentActivity() {
         }
 
         setContentView(R.layout.activity_sign)
-
         setWindowsFlags()
 
         signInFragment = SignInFragment()
@@ -61,12 +62,13 @@ class SignActivity : FragmentActivity() {
 
         viewPager = findViewById(R.id.viewPagerSign)
         auth = findViewById(R.id.authorization)
+        signButton = findViewById(R.id.next_btn)
 
         pagerAdapter = SignPagerAdapter(
             supportFragmentManager,
             models as ArrayList<SignPageModel>
         )
-        viewPager?.adapter = pagerAdapter
+        viewPager.adapter = pagerAdapter
     }
 
     fun onTokenReceived(account: Account, password: String?, token: String?) {
@@ -125,7 +127,7 @@ class SignActivity : FragmentActivity() {
 
     fun selectPage(view: View) {
         if (view.id == R.id.authorization) {
-            viewPager?.setCurrentItem(1, true)
+            viewPager.setCurrentItem(1, true)
         }
     }
 
@@ -138,6 +140,7 @@ class SignActivity : FragmentActivity() {
 
     fun signIn(view: View){
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
+        signButton.isClickable = false
         signInFragment?.signIn()
     }
 

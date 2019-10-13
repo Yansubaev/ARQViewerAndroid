@@ -2,10 +2,6 @@ package su.arq.arqviewer.projects.projectcard.model
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.projects.projectcard.adapter.ProjectCardAdapter
 

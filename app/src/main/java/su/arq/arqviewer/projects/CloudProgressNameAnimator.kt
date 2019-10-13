@@ -1,11 +1,11 @@
 package su.arq.arqviewer.projects
 
 import android.animation.ValueAnimator
-import android.support.constraint.ConstraintLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 
 fun cloudVisible(
     cloud: ImageView?,

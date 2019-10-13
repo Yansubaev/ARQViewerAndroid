@@ -1,10 +1,6 @@
 package su.arq.arqviewer.sign.fragment
 
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,16 +9,21 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.sign.InputFieldAnimations
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
+import su.arq.arqviewer.webcomunication.response.AuthDataResponse
 
 class SignInFragment :
     Fragment(),
-    LoaderManager.LoaderCallbacks<String>,
-    Loader.OnLoadCanceledListener<String>
+    LoaderManager.LoaderCallbacks<AuthDataResponse>,
+    Loader.OnLoadCanceledListener<AuthDataResponse>
 {
 
     private var aye: ImageButton? = null
@@ -84,7 +85,7 @@ class SignInFragment :
         }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<String> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<AuthDataResponse> {
         val loader = ARQVAuthDataLoader(
                 activity!!.applicationContext,
                 loginField.text.toString(),
@@ -94,23 +95,23 @@ class SignInFragment :
         return loader
     }
 
-    override fun onLoadFinished(loader: Loader<String>, token: String?) {
-        if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(token)){
+    override fun onLoadFinished(loader: Loader<AuthDataResponse>, data: AuthDataResponse?) {
+        if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data?.token)){
             (activity as SignActivity).onTokenReceived(
                 ARQAccount(loginField.text.toString()),
                 passwordField.text.toString(),
-                token
+                data?.token
             )
         }
     }
 
-    override fun onLoadCanceled(loader: Loader<String>) {
+    override fun onLoadCanceled(loader: Loader<AuthDataResponse>) {
         passwordInput.activateInputFail()
         loginInput.activateInputFail()
     }
 
 
-    override fun onLoaderReset(loader: Loader<String>) {
+    override fun onLoaderReset(loader: Loader<AuthDataResponse>) {
 
     }
 }

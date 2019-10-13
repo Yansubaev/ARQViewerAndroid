@@ -1,8 +1,9 @@
 package su.arq.arqviewer.entities
 
 import org.json.JSONObject
+import java.io.File
 
-class ARQBuild(json: JSONObject){
+class ARQBuild(json: JSONObject, directory: String){
     var guid: String = json.getString("guid")
     var name: String = json.getString("name")
     var description: String = json.getString("description")
@@ -15,5 +16,5 @@ class ARQBuild(json: JSONObject){
         else -> BuildIcon.DEFAULT
     }
     var downloaded: Boolean = false
-
+    var file: File = File("$directory/$guid.apk")
 }

@@ -2,9 +2,9 @@ package su.arq.arqviewer.splashscreen
 
 import android.accounts.AccountManager
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import su.arq.arqviewer.R
 import su.arq.arqviewer.projects.activity.ProjectsActivity
 import su.arq.arqviewer.account.ARQAccount

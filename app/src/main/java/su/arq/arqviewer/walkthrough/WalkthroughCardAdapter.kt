@@ -1,13 +1,13 @@
 package su.arq.arqviewer.walkthrough
 
 import android.content.Context
-import android.support.constraint.ConstraintLayout
-import android.support.v4.view.PagerAdapter
-import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.viewpager.widget.PagerAdapter
 import su.arq.arqviewer.R
 
 class WalkthroughCardAdapter(

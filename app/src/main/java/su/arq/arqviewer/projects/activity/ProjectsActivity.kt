@@ -3,24 +3,27 @@ package su.arq.arqviewer.projects.activity
 import android.accounts.AccountManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.Loader
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.unity3d.player.UnityPlayerActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.projects.projectcard.ProjectsCardGrid
 import su.arq.arqviewer.projects.projectcard.decor.GridSpacingItemDecoration
 import su.arq.arqviewer.projects.projectcard.adapter.ProjectCardAdapter
 import su.arq.arqviewer.projects.projectcard.model.ProjectCardModel
 import su.arq.arqviewer.sign.activity.SignActivity
+import su.arq.arqviewer.unity.ViewerActivity
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT_NAME
 import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN
@@ -31,53 +34,32 @@ import kotlin.math.roundToInt
 
 class ProjectsActivity :
     AppCompatActivity(),
-    ProjectCardAdapter.ItemClickListener,
     LoaderManager.LoaderCallbacks<Array<ARQBuild>>,
     ActivityCompat.OnRequestPermissionsResultCallback
 {
-    private var projectModels: MutableList<ProjectCardModel>? = null
-    private var projectAdapter: ProjectCardAdapter? = null
-    private var projectsGrid: RecyclerView? = null
     private var mLoaderManager: LoaderManager? = null
     private var token: String? = null
-    private var itemHeight: Int? = null
-    private var account: String? = null
-    private var density: Float = 1f
-
+    var account: String? = null
+    lateinit var projectsGrid: ProjectsCardGrid
     private var refreshLay: SwipeRefreshLayout? = null
 
-    private var tempProjectModel: ProjectCardModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_projects)
-        val spanCount = 2
 
-        projectsGrid = this.findViewById(R.id.projects_grid)
-        projectsGrid?.layoutManager = GridLayoutManager(applicationContext, spanCount)
+        val recyclerView = this.findViewById<RecyclerView>(R.id.projects_grid)
         mLoaderManager = LoaderManager.getInstance(this)
-        projectModels = ArrayList()
         token = intent?.getStringExtra(EXTRA_TOKEN)
         account = intent?.getStringExtra(EXTRA_ARQ_ACCOUNT_NAME)
-        projectAdapter?.setOnClickListener(this)
 
         refreshLay = findViewById(R.id.projects_refresh_lay)
 
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
-        density = metrics.density
 
-        val itemDecoration = GridSpacingItemDecoration(
-            spanCount,
-            (22 * density).roundToInt(),
-            true
-        )
-        itemHeight = (metrics.widthPixels/2 - 33*density).roundToInt()
-        projectAdapter?.viewWidth = itemHeight
+        projectsGrid = ProjectsCardGrid(this, recyclerView, metrics)
 
-        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context, density)
-        projectsGrid?.addItemDecoration(itemDecoration)
-        projectsGrid?.adapter = projectAdapter
         mLoaderManager?.restartLoader(R.id.builds_loader, null, this)
 
         refreshLay?.setOnRefreshListener {
@@ -98,24 +80,22 @@ class ProjectsActivity :
         finish()
     }
 
-    override fun onItemClick(view: View?, position: Int) {
-        val model = (projectsGrid?.adapter as ProjectCardAdapter).getItem(position)
+    fun requestPerms(){
+        requestPermissions(
+            arrayOf(
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE
+            ),
+            228
+        )
+    }
 
-        if(model?.build?.downloaded == false) {
-            model.build.downloaded = true
+    fun openProject(build: ARQBuild){
+        intent = Intent(applicationContext, UnityPlayerActivity::class.java)
+        val buildPath = "${filesDir.absolutePath}/$account/${model?.build?.guid}"
+        intent.putExtra("EXTRA_VIEWER_BUILD_PATH", buildPath)
 
-            tempProjectModel = model
-
-            requestPermissions(
-                arrayOf(
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                228
-            )
-        } else {
-            Log.d(this.javaClass.simpleName, model?.holder?.projectName?.text.toString())
-        }
+        startActivity(intent)
 
     }
 
@@ -124,47 +104,11 @@ class ProjectsActivity :
     }
 
     override fun onLoadFinished(p0: Loader<Array<ARQBuild>>, builds: Array<ARQBuild>?) {
-        projectModels?.clear()
-        builds?.forEach {
-            val pm = ProjectCardModel(applicationContext, it)
-            projectModels?.add(pm)
-        }
-        updateProjectsGrid()
+        projectsGrid.refillModels(builds)
         refreshLay?.isRefreshing = false
     }
 
     override fun onLoaderReset(p0: Loader<Array<ARQBuild>>) {  }
-
-    private fun updateProjectsGrid(){
-        projectAdapter = ProjectCardAdapter(projectModels, projectsGrid?.context, density)
-        projectAdapter?.setOnClickListener(this)
-        projectAdapter?.viewWidth = itemHeight
-
-        projectAdapter?.addOnBindViewHolderListener { holder, position ->
-            val build = projectAdapter?.cardModels?.get(position)?.build
-            if(existInDevice(build) ){
-                build?.downloaded = true
-                holder.downloaded()
-            }
-        }
-
-        projectsGrid?.adapter = projectAdapter
-    }
-
-    private fun existInDevice(build: ARQBuild?): Boolean{
-        return try {
-            val apkStorage = File("${filesDir.absolutePath}/$account")
-            if(apkStorage.exists()){
-                val outputFile = File(apkStorage, "${build?.guid}.arq")
-                outputFile.exists()
-            }else{
-                false
-            }
-        }catch (ex: Exception){
-            Log.e(this.javaClass.simpleName, ex.message, ex)
-            false
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -183,7 +127,7 @@ class ProjectsActivity :
 
                 if (!outputFile.exists()) {
                     outputFile.createNewFile()
-                    Log.e(this.javaClass.simpleName, "File Created")
+                    Log.i(this.javaClass.simpleName, "File Created")
                 }
 
                 ARQVBuildContentLoader(
@@ -197,10 +141,7 @@ class ProjectsActivity :
             }
             tempProjectModel = null
         }else{
-            requestPermissions(arrayOf(
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                android.Manifest.permission.READ_EXTERNAL_STORAGE), 228
-            )
+            requestPerms()
         }
     }
 }

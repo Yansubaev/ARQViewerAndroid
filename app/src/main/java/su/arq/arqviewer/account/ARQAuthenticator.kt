@@ -46,7 +46,7 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
                     mContext,
                     account?.name,
                     password
-                )
+                )?.token
             }
         }
         if (!TextUtils.isEmpty(authToken)) {

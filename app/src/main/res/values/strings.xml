@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="company_name">ARQ</string>
     <string name="app_name">ARQ Viewer</string>
+    <string name="game_view_content_description">Game view</string>
     <string name="sign_in">Войти</string>
     <string name="goto_website">Перейти на сайт</string>
     <string name="card_top_text">Верхний текст карточки</string>
