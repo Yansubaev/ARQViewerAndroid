@@ -21,10 +21,10 @@ class ARQVAuthDataLoader(
     password: String?
 ) : AsyncTaskLoader<AuthDataResponse>(context) {
 
-    private val mBaseUrl: String = context.getString(R.string.arqv_connection_base_url)
-    private val mSignInUrl: String = context.getString(R.string.arqv_connection_sign_in)
-    private val mLogin: String? = login
-    private val mPassword: String? = password
+    private val baseUrl: String = context.getString(R.string.arqv_connection_base_url)
+    private val signInUrl: String = context.getString(R.string.arqv_connection_sign_in)
+    private val login: String? = login
+    private val password: String? = password
     private var authData: AuthDataResponse? = null
 
     companion object {
@@ -68,7 +68,7 @@ class ARQVAuthDataLoader(
 
     @Throws(IOException::class)
     private fun signIn(): AuthDataResponse? {
-        val cn: HttpURLConnection = URL(mBaseUrl + mSignInUrl).openConnection()
+        val cn: HttpURLConnection = URL(baseUrl + signInUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "POST"
         cn.addRequestProperty("Content-Type", "application/json")
@@ -87,8 +87,8 @@ class ARQVAuthDataLoader(
     private fun sendBody(cn: HttpURLConnection) {
         val body = JSONObject()
         try {
-            body.put("login", mLogin)
-            body.put("password", mPassword)
+            body.put("login", login)
+            body.put("password", password)
 
             Log.i(this.javaClass.simpleName, body.toString())
 
@@ -107,7 +107,7 @@ class ARQVAuthDataLoader(
     @Throws(IOException::class)
     private fun readToken(cn: HttpURLConnection): AuthDataResponse? {
         return try {
-            AuthDataResponse(cn.inputStream)
+            AuthDataResponse(cn)
         } catch (ex: ResponseSuccessFalseException){
             cancelLoad()
             null

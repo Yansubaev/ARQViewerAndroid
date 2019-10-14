@@ -18,9 +18,7 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.page.model.SignPageModel
 import su.arq.arqviewer.sign.page.adapter.SignPagerAdapter
 import su.arq.arqviewer.sign.fragment.SignInFragment
-import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT_NAME
-import su.arq.arqviewer.utils.EXTRA_TOKEN
-
+import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT
 
 class SignActivity : FragmentActivity() {
 
@@ -31,7 +29,7 @@ class SignActivity : FragmentActivity() {
     private lateinit var auth: TextView
     private lateinit var signButton: ImageButton
 
-    private var mAccountAuthenticatorResponse: AccountAuthenticatorResponse? = null
+    private var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
     private var mResultBundle: Bundle? = null
 
     private var signInFragment: SignInFragment? = null
@@ -39,16 +37,17 @@ class SignActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mAccountAuthenticatorResponse = intent.getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
+        accountAuthenticatorResponse =
+            intent.getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
 
-        if(mAccountAuthenticatorResponse != null){
-            mAccountAuthenticatorResponse?.onRequestContinued()
+        if(accountAuthenticatorResponse != null){
+            accountAuthenticatorResponse?.onRequestContinued()
         }
 
         val from = intent.getStringExtra("FROM_ACTIVITY")
         if(from == "Projects"){
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
-        }else{
+        } else {
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
@@ -92,33 +91,22 @@ class SignActivity : FragmentActivity() {
         setResult(Activity.RESULT_OK)
 
         val intent = Intent(applicationContext, ProjectsActivity::class.java)
-        intent.putExtra(EXTRA_TOKEN, token).putExtra(EXTRA_ARQ_ACCOUNT_NAME, account.name)
-        startActivity(intent)
+        intent.putExtra(EXTRA_ARQ_ACCOUNT, account)
 
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+        startActivity(intent)
         finish()
     }
 
-    private fun setAccountAuthenticatorResult(result: Bundle){
-        mResultBundle = result
+    fun signIn(view: View){
+        signButton.isClickable = false
+        signInFragment?.signIn()
     }
 
-    override fun finish(){
-        if(mAccountAuthenticatorResponse != null){
-            if(mResultBundle != null){
-                mAccountAuthenticatorResponse?.onResult(mResultBundle)
-            }else{
-                mAccountAuthenticatorResponse?.onError(AccountManager.ERROR_CODE_CANCELED, "canceled")
-            }
-            mAccountAuthenticatorResponse = null
-        }
-        super.finish()
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-
-        setWindowsFlags()
+    fun signFailed(){
+        signButton.isClickable = true
     }
 
     fun backButton(view: View) {
@@ -131,17 +119,35 @@ class SignActivity : FragmentActivity() {
         }
     }
 
+    override fun finish(){
+        if(accountAuthenticatorResponse != null){
+            if(mResultBundle != null){
+                accountAuthenticatorResponse?.onResult(mResultBundle)
+            }else{
+                accountAuthenticatorResponse?.onError(AccountManager.ERROR_CODE_CANCELED, "canceled")
+            }
+            accountAuthenticatorResponse = null
+        }
+
+        super.finish()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        setWindowsFlags()
+    }
+
+    private fun setAccountAuthenticatorResult(result: Bundle){
+        mResultBundle = result
+    }
+
     private fun setWindowsFlags() {
         this.window.decorView.systemUiVisibility = (
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 )
-    }
-
-    fun signIn(view: View){
-        val intent = Intent(applicationContext, ProjectsActivity::class.java)
-        signButton.isClickable = false
-        signInFragment?.signIn()
     }
 
 }

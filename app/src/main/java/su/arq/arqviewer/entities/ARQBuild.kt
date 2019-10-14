@@ -1,5 +1,6 @@
 package su.arq.arqviewer.entities
 
+import android.util.Log
 import org.json.JSONObject
 import java.io.File
 
@@ -15,6 +16,7 @@ class ARQBuild(json: JSONObject, directory: String){
         6 -> BuildIcon.MANUFACTURE
         else -> BuildIcon.DEFAULT
     }
-    var downloaded: Boolean = false
-    var file: File = File("$directory/$guid.apk")
+    var file: File = File("$directory/$guid.arq")
+    val downloaded: Boolean
+        get() = file.exists()
 }

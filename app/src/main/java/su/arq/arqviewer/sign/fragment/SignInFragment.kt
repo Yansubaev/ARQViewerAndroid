@@ -16,7 +16,7 @@ import androidx.loader.content.Loader
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQAccount
-import su.arq.arqviewer.sign.InputFieldAnimations
+import su.arq.arqviewer.sign.InputFieldModel
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.webcomunication.response.AuthDataResponse
 
@@ -31,8 +31,8 @@ class SignInFragment :
 
     private lateinit var loginField: EditText
     private lateinit var passwordField: EditText
-    private lateinit var loginInput: InputFieldAnimations
-    private lateinit var passwordInput: InputFieldAnimations
+    private lateinit var loginInput: InputFieldModel
+    private lateinit var passwordInput: InputFieldModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,15 +46,16 @@ class SignInFragment :
         val loginTxt = rootView.findViewById<TextView>(R.id.sign_in_login_txt)
         loginField = rootView.findViewById(R.id.sign_in_login_field)
         val loginLay = rootView.findViewById<ConstraintLayout>(R.id.sign_in_login_lay)
-        loginInput = InputFieldAnimations(context!!, loginTxt, loginField, loginLay)
+        loginInput = InputFieldModel(context!!, loginTxt, loginField, loginLay)
         loginLay.setOnClickListener(loginInput)
 
         val passwordTxt = rootView.findViewById<TextView>(R.id.sign_in_password_txt)
         passwordField = rootView.findViewById(R.id.sign_in_password_field)
         val passwordLay = rootView.findViewById<ConstraintLayout>(R.id.sign_in_password_lay)
-        passwordInput = InputFieldAnimations(context!!, passwordTxt, passwordField, passwordLay)
+        passwordInput = InputFieldModel(context!!, passwordTxt, passwordField, passwordLay)
         passwordLay.setOnClickListener(passwordInput)
 
+/*
         loginField.setOnFocusChangeListener { _, hasFocus ->
             if(!hasFocus){
                 passwordField.requestFocus()
@@ -64,6 +65,19 @@ class SignInFragment :
         passwordField.setOnFocusChangeListener { _, hasFocus ->
             if(!hasFocus){
                 signIn()
+            }
+        }
+
+*/
+
+        passwordField.setOnEditorActionListener { v, _, event ->
+            if(event != null){
+                Log.d(this.javaClass.simpleName, "Event is not null")
+                true
+            }else{
+                (activity as SignActivity).signIn(v)
+                Log.d(this.javaClass.simpleName, "Event is null")
+                false
             }
         }
 
@@ -108,6 +122,7 @@ class SignInFragment :
     override fun onLoadCanceled(loader: Loader<AuthDataResponse>) {
         passwordInput.activateInputFail()
         loginInput.activateInputFail()
+        (activity as SignActivity).signFailed()
     }
 
 

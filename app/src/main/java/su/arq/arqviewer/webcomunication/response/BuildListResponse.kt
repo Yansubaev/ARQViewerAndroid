@@ -1,15 +1,13 @@
 package su.arq.arqviewer.webcomunication.response
 
-import android.content.Context
 import org.json.JSONArray
 import su.arq.arqviewer.entities.ARQBuild
-import java.io.InputStream
+import java.net.HttpURLConnection
 
 class BuildListResponse(
-    inputStream: InputStream,
-    context: Context,
-    accountName: String
-): WebResponseBase(inputStream) {
+    cn: HttpURLConnection,
+    buildDir: String
+): WebResponseBase(cn) {
 
     val jsonBuilds: JSONArray = json.getJSONArray("builds")
     val builds: Array<ARQBuild>
@@ -18,7 +16,7 @@ class BuildListResponse(
         builds = Array(jsonBuilds.length()) {
             ARQBuild(
                 jsonBuilds.getJSONObject(it),
-                "${context.filesDir.absolutePath}/$accountName"
+                buildDir
             )
         }
     }

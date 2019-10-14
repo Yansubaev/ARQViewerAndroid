@@ -9,6 +9,7 @@ import android.net.Uri
 import android.util.DisplayMetrics
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import su.arq.arqviewer.utils.EXTRA_FROM_ACTIVITY
 import kotlin.math.roundToInt
 
 class WalkthroughActivity : AppCompatActivity() {
@@ -19,7 +20,6 @@ class WalkthroughActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         setContentView(R.layout.activity_walkthrough)
 
@@ -51,6 +51,7 @@ class WalkthroughActivity : AppCompatActivity() {
     fun bottomSignButtonsClick(view: View) {
         if(view.id == R.id.sign_up_btn){
             val intent = Intent(applicationContext, SignActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             startActivity(intent)
         }else if (view.id == R.id.goto_website_btn){
             val browserIntent = Intent(

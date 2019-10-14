@@ -16,15 +16,23 @@ import java.io.FileOutputStream
 class ARQVBuildContentLoader(
     context: Context,
     private val authToken: String?,
-    private val outputFile: File,
     private val cardModel: ProjectCardModel?
 ) : AsyncTask<String, Long, ByteArray>(){
 
     private val baseUrl: String = context.getString(R.string.arqv_connection_base_url)
     private val buildsUrl: String = context.getString(R.string.arqv_connection_bulds)
+    private var outputFile: File? = null
 
     override fun onPreExecute() {
         cardModel?.holder?.startDownloading()
+
+        outputFile = cardModel?.build?.file
+        if (outputFile?.parentFile?.exists() == false) { outputFile?.parentFile?.mkdir() }
+
+        if (outputFile?.exists() == false) {
+            outputFile?.createNewFile()
+            Log.i(this.javaClass.simpleName, "File Created")
+        }
         super.onPreExecute()
     }
 
@@ -81,7 +89,7 @@ class ARQVBuildContentLoader(
     override fun onPostExecute(result: ByteArray?) {
         try {
             val fos = FileOutputStream(outputFile)
-            fos.write(result)
+            fos.use { fos.write(result) }
 
             cardModel?.holder?.progressBar?.setProgress(100, true)
             cardModel?.holder?.downloadedAnimate()

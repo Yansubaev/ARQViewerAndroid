@@ -1,18 +1,17 @@
 package su.arq.arqviewer.webcomunication.response
 
-import android.util.Log
 import org.json.JSONObject import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import java.io.BufferedInputStream
-import java.io.InputStream
+import java.net.HttpURLConnection
 
-open class WebResponseBase (inputStream: InputStream){
+open class WebResponseBase (cn: HttpURLConnection){
     val success: Boolean
     val message: String
 
     protected val json: JSONObject
 
     init {
-        val inp = BufferedInputStream(inputStream)
+        val inp = BufferedInputStream(cn.inputStream)
         val inpString = inp.readBytes().toString(Charsets.UTF_8)
 
         json = JSONObject(inpString)
