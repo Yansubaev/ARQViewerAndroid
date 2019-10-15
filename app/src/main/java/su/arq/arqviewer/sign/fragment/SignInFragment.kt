@@ -17,15 +17,16 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.sign.InputFieldModel
+import su.arq.arqviewer.sign.activity.AccountRegistrator
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.webcomunication.response.AuthDataResponse
+import su.arq.arqviewer.webcomunication.response.AuthenticationDataProvider
 
 class SignInFragment :
     Fragment(),
-    LoaderManager.LoaderCallbacks<AuthDataResponse>,
-    Loader.OnLoadCanceledListener<AuthDataResponse>
+    LoaderManager.LoaderCallbacks<AuthenticationDataProvider>,
+    Loader.OnLoadCanceledListener<AuthenticationDataProvider>
 {
-
     private var aye: ImageButton? = null
     private var mLoaderManager: LoaderManager? = null
 
@@ -55,28 +56,11 @@ class SignInFragment :
         passwordInput = InputFieldModel(context!!, passwordTxt, passwordField, passwordLay)
         passwordLay.setOnClickListener(passwordInput)
 
-/*
-        loginField.setOnFocusChangeListener { _, hasFocus ->
-            if(!hasFocus){
-                passwordField.requestFocus()
-                passwordInput.activateInput()
-            }
-        }
-        passwordField.setOnFocusChangeListener { _, hasFocus ->
-            if(!hasFocus){
-                signIn()
-            }
-        }
-
-*/
-
         passwordField.setOnEditorActionListener { v, _, event ->
             if(event != null){
-                Log.d(this.javaClass.simpleName, "Event is not null")
                 true
             }else{
                 (activity as SignActivity).signIn(v)
-                Log.d(this.javaClass.simpleName, "Event is null")
                 false
             }
         }
@@ -99,7 +83,7 @@ class SignInFragment :
         }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<AuthDataResponse> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<AuthenticationDataProvider> {
         val loader = ARQVAuthDataLoader(
                 activity!!.applicationContext,
                 loginField.text.toString(),
@@ -109,24 +93,24 @@ class SignInFragment :
         return loader
     }
 
-    override fun onLoadFinished(loader: Loader<AuthDataResponse>, data: AuthDataResponse?) {
-        if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data?.token)){
-            (activity as SignActivity).onTokenReceived(
-                ARQAccount(loginField.text.toString()),
+    override fun onLoadFinished(
+        loader: Loader<AuthenticationDataProvider>,
+        data: AuthenticationDataProvider
+    ) {
+        if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){
+            (activity as AccountRegistrator).onTokenReceived(
+                ARQAccount(data.email),
                 passwordField.text.toString(),
-                data?.token
+                data.token
             )
         }
     }
 
-    override fun onLoadCanceled(loader: Loader<AuthDataResponse>) {
+    override fun onLoadCanceled(loader: Loader<AuthenticationDataProvider>) {
         passwordInput.activateInputFail()
         loginInput.activateInputFail()
         (activity as SignActivity).signFailed()
     }
 
-
-    override fun onLoaderReset(loader: Loader<AuthDataResponse>) {
-
-    }
+    override fun onLoaderReset(loader: Loader<AuthenticationDataProvider>) {  }
 }
