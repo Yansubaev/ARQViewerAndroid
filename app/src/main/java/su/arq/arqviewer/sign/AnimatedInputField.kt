@@ -18,7 +18,7 @@ import org.w3c.dom.Text
 import su.arq.arqviewer.R
 import java.security.Key
 
-open class InputFieldModel(
+open class AnimatedInputField(
     protected var context: Context,
     protected var caption: TextView?,
     protected var inputText: EditText?,

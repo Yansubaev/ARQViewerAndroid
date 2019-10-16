@@ -9,7 +9,7 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.AccountRegistrator
 
 class AccountRegistratorService(
-    registrator: AccountRegistrator
+    private val registrator: AccountRegistrator
 ) {
     private var accountAuthenticatorResponse: AccountAuthenticatorResponse?
     private var context: Context
@@ -31,7 +31,7 @@ class AccountRegistratorService(
 
     private fun onTokenReceived(account: Account, password: String?, token: String?) {
         val result = Bundle()
-
+        this.javaClass.simpleName + " signTrace"
         if (accountManager.addAccountExplicitly(account, password, Bundle())) {
             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
@@ -45,6 +45,7 @@ class AccountRegistratorService(
             )
         }
         setAccountAuthenticatorResult(result)
+        registrator.onAccountRegistered(account)
 
         finish()
     }

@@ -16,24 +16,23 @@ import androidx.loader.content.Loader
 import su.arq.arqviewer.R
 import su.arq.arqviewer.sign.activity.SignActivity
 import su.arq.arqviewer.account.ARQAccount
-import su.arq.arqviewer.sign.InputFieldModel
+import su.arq.arqviewer.sign.AnimatedInputField
 import su.arq.arqviewer.sign.activity.AccountRegistrator
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
-import su.arq.arqviewer.webcomunication.response.AuthDataResponse
-import su.arq.arqviewer.webcomunication.response.AuthenticationDataProvider
+import su.arq.arqviewer.webcomunication.response.AuthenticationData
 
 class SignInFragment :
     Fragment(),
-    LoaderManager.LoaderCallbacks<AuthenticationDataProvider>,
-    Loader.OnLoadCanceledListener<AuthenticationDataProvider>
+    LoaderManager.LoaderCallbacks<AuthenticationData>,
+    Loader.OnLoadCanceledListener<AuthenticationData>
 {
     private var aye: ImageButton? = null
     private var mLoaderManager: LoaderManager? = null
 
     private lateinit var loginField: EditText
     private lateinit var passwordField: EditText
-    private lateinit var loginInput: InputFieldModel
-    private lateinit var passwordInput: InputFieldModel
+    private lateinit var loginInput: AnimatedInputField
+    private lateinit var passwordInput: AnimatedInputField
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,21 +46,21 @@ class SignInFragment :
         val loginTxt = rootView.findViewById<TextView>(R.id.sign_in_login_txt)
         loginField = rootView.findViewById(R.id.sign_in_login_field)
         val loginLay = rootView.findViewById<ConstraintLayout>(R.id.sign_in_login_lay)
-        loginInput = InputFieldModel(context!!, loginTxt, loginField, loginLay)
+        loginInput = AnimatedInputField(context!!, loginTxt, loginField, loginLay)
         loginLay.setOnClickListener(loginInput)
 
         val passwordTxt = rootView.findViewById<TextView>(R.id.sign_in_password_txt)
         passwordField = rootView.findViewById(R.id.sign_in_password_field)
         val passwordLay = rootView.findViewById<ConstraintLayout>(R.id.sign_in_password_lay)
-        passwordInput = InputFieldModel(context!!, passwordTxt, passwordField, passwordLay)
+        passwordInput = AnimatedInputField(context!!, passwordTxt, passwordField, passwordLay)
         passwordLay.setOnClickListener(passwordInput)
 
         passwordField.setOnEditorActionListener { v, _, event ->
             if(event != null){
-                true
+                false
             }else{
                 (activity as SignActivity).signIn(v)
-                false
+                true
             }
         }
 
@@ -75,15 +74,15 @@ class SignInFragment :
     fun signIn(){
         when {
             TextUtils.isEmpty(loginField.text) ->
-                loginField.error = getString(R.string.login)
+                loginField.error = "Логин не должен быть пустым"
             TextUtils.isEmpty(passwordField.text) ->
-                passwordField.error = getString(R.string.password)
+                passwordField.error = "Пароль не должен быть пустым"
             else ->
                 mLoaderManager?.restartLoader(R.id.auth_data_loader, null, this)
         }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<AuthenticationDataProvider> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<AuthenticationData> {
         val loader = ARQVAuthDataLoader(
                 activity!!.applicationContext,
                 loginField.text.toString(),
@@ -93,11 +92,9 @@ class SignInFragment :
         return loader
     }
 
-    override fun onLoadFinished(
-        loader: Loader<AuthenticationDataProvider>,
-        data: AuthenticationDataProvider
-    ) {
+    override fun onLoadFinished(loader: Loader<AuthenticationData>, data: AuthenticationData) {
         if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){
+            Log.d(this.javaClass.simpleName + " signTrace", "onLoadFinished")
             (activity as AccountRegistrator).onTokenReceived(
                 ARQAccount(data.email),
                 passwordField.text.toString(),
@@ -106,11 +103,11 @@ class SignInFragment :
         }
     }
 
-    override fun onLoadCanceled(loader: Loader<AuthenticationDataProvider>) {
+    override fun onLoadCanceled(loader: Loader<AuthenticationData>) {
         passwordInput.activateInputFail()
         loginInput.activateInputFail()
         (activity as SignActivity).signFailed()
     }
 
-    override fun onLoaderReset(loader: Loader<AuthenticationDataProvider>) {  }
+    override fun onLoaderReset(loader: Loader<AuthenticationData>) {  }
 }

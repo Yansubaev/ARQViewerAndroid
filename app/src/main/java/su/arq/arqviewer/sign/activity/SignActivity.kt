@@ -11,6 +11,7 @@ import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.ImageButton
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager.widget.PagerAdapter
@@ -90,6 +91,7 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
     }
 
     override fun onTokenReceived(account: Account, password: String?, token: String?) {
+        Log.d(this.javaClass.simpleName + " signTrace", "onTokenReceived")
         onTokenReceiver?.invoke(account, password, token)
     }
 

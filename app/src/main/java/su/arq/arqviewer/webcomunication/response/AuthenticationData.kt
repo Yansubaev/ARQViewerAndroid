@@ -1,6 +1,6 @@
 package su.arq.arqviewer.webcomunication.response
 
-interface AuthenticationDataProvider {
+interface AuthenticationData {
     val token: String
     val email: String
 }
