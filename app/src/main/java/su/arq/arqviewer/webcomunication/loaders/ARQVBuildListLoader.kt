@@ -2,10 +2,11 @@ package su.arq.arqviewer.webcomunication.loaders
 
 import android.content.Context
 import androidx.loader.content.AsyncTaskLoader
-import su.arq.arqviewer.BuildMetaDataProvider
+import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
+import su.arq.arqviewer.webcomunication.response.BuildListData
 import su.arq.arqviewer.webcomunication.response.BuildListResponse
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -13,52 +14,46 @@ import java.net.URL
 
 class ARQVBuildListLoader (
     context: Context,
-    var buildMeta: BuildMetaDataProvider
-) : AsyncTaskLoader<Array<ARQBuild>>(context){
+    private var buildMeta: BuildMetaData
+) : AsyncTaskLoader<BuildListData>(context){
 
     private val baseUrl: String = context.getString(R.string.arqv_connection_base_url)
     private val buildsUrl: String = context.getString(R.string.arqv_connection_bulds)
+    private var builds: BuildListData? = null
 
-    private var builds: Array<ARQBuild>? = null
-
-    override fun loadInBackground(): Array<ARQBuild>? {
-        return loadBuildList()
-    }
+    override fun loadInBackground(): BuildListData? { return loadBuildList() }
 
     override fun onStartLoading() {
-        if (builds.isNullOrEmpty()) {
+        if (builds == null) {
             forceLoad()
         } else {
             deliverResult(builds)
         }
     }
 
-    override fun deliverResult(data: Array<ARQBuild>?) {
+    override fun deliverResult(data: BuildListData?) {
         builds = data
         super.deliverResult(data)
     }
 
-    private fun loadBuildList() : Array<ARQBuild>?{
+    private fun loadBuildList() : BuildListData?{
         val cn: HttpURLConnection = URL(baseUrl + buildsUrl).openConnection()
                 as HttpURLConnection
         cn.requestMethod = "GET"
         cn.addRequestProperty("Content-Type", "application/json")
         cn.addRequestProperty("Authorization", "Bearer ${buildMeta.token}")
-
         cn.connect()
 
         if(responseCodeSuccess(cn.responseCode)){
             return readInput(cn)
         }
-
         onCancelLoad()
-
         return null
     }
 
-    private fun readInput(cn: HttpURLConnection): Array<ARQBuild>?{
+    private fun readInput(cn: HttpURLConnection): BuildListData?{
         return try{
-            BuildListResponse(cn, buildMeta.buildDirectory).builds
+            BuildListResponse(cn, buildMeta.buildDirectory)
         }catch (ex: IOException){
             null
         }catch (ex: ResponseSuccessFalseException){

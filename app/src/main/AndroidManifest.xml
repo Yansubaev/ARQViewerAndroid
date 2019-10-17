@@ -23,7 +23,7 @@
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".splashscreen.SplashScreenActivity"
+            android:name="su.arq.arqviewer.activities.splashscreen.SplashScreenActivity"
             android:theme="@style/ARQVTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,13 +32,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".projects.activity.ProjectsActivity"
+            android:name="su.arq.arqviewer.activities.projects.ProjectsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".sign.activity.SignActivity"
+            android:name="su.arq.arqviewer.activities.sign.SignActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".walkthrough.WalkthroughActivity"
+            android:name="su.arq.arqviewer.activities.walkthrough.WalkthroughActivity"
             android:screenOrientation="portrait" />
 
         <service

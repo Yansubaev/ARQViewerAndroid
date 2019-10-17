@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.accounts.AccountManager
 import android.content.Intent
 import android.text.TextUtils
-import su.arq.arqviewer.sign.activity.SignActivity
+import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.utils.EXTRA_TOKEN_TYPE
 
-class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mContext) {
+class ARQAuthenticator(var context: Context) : AbstractAccountAuthenticator(context) {
     override fun confirmCredentials(
         response: AccountAuthenticatorResponse?,
         account: Account?,
@@ -37,13 +37,13 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         options: Bundle?
     ): Bundle {
         val result = Bundle()
-        val am = AccountManager.get(mContext.applicationContext)
+        val am = AccountManager.get(context.applicationContext)
         var authToken = am.peekAuthToken(account, authTokenType)
         if (TextUtils.isEmpty(authToken)) {
             val password = am.getPassword(account)
             if (!TextUtils.isEmpty(password)) {
                 authToken = ARQVAuthDataLoader.signIn(
-                    mContext,
+                    context,
                     account?.name,
                     password
                 )?.token
@@ -54,7 +54,7 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account?.type)
             result.putString(AccountManager.KEY_AUTHTOKEN, authToken)
         } else {
-            val intent = Intent(mContext, SignActivity::class.java)
+            val intent = Intent(context, SignActivity::class.java)
             intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
             intent.putExtra(EXTRA_TOKEN_TYPE, authTokenType)
             val bundle = Bundle()
@@ -85,7 +85,7 @@ class ARQAuthenticator(var mContext: Context) : AbstractAccountAuthenticator(mCo
         requiredFeatures: Array<out String>?,
         options: Bundle?
     ): Bundle {
-        val intent = Intent(mContext, SignActivity::class.java)
+        val intent = Intent(context, SignActivity::class.java)
         intent.putExtra(EXTRA_TOKEN_TYPE, accountType)
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         val bundle = Bundle()

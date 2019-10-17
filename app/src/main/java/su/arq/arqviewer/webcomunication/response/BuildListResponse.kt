@@ -7,10 +7,10 @@ import java.net.HttpURLConnection
 class BuildListResponse(
     cn: HttpURLConnection,
     buildDir: String
-): WebResponseBase(cn) {
+): WebResponseBase(cn), BuildListData {
 
-    val jsonBuilds: JSONArray = json.getJSONArray("builds")
-    val builds: Array<ARQBuild>
+    private val jsonBuilds: JSONArray = json.getJSONArray("builds")
+    override val builds: Array<ARQBuild>
 
     init {
         builds = Array(jsonBuilds.length()) {
