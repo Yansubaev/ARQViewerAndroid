@@ -4,8 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import su.arq.arqviewer.entities.ARQBuild
 
-class ProjectCardModel (context: Context, build: ARQBuild){
-    val build = build
+data class ProjectCardModel (private val context: Context, var build: ARQBuild){
     var icon  = context.getDrawable(build.icon.id)
     var holder: ProjectCardViewHolder? = null
 }

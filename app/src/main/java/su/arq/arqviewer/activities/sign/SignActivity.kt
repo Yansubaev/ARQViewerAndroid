@@ -9,10 +9,14 @@ import java.util.ArrayList
 import android.accounts.AccountManager
 import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse
+import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -20,9 +24,12 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.activities.sign.page.SignPageModel
 import su.arq.arqviewer.activities.sign.page.SignPagerAdapter
 import su.arq.arqviewer.activities.sign.fragment.SignInFragment
+import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
+import su.arq.arqviewer.activities.sign.registrator.AccountRegistratorService
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT
 
-class SignActivity : FragmentActivity(), AccountRegistrator {
+class SignActivity : FragmentActivity(),
+    AccountRegistrator {
     override val context: Context
         get() = applicationContext
     override var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
@@ -34,6 +41,8 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
     private lateinit var viewPager: ViewPager
     private lateinit var auth: TextView
     private lateinit var signButton: ImageButton
+    private lateinit var nextArrow: ImageView
+    private lateinit var progressCircle: ProgressBar
     private lateinit var signInFragment: SignInFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +71,8 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
         viewPager = findViewById(R.id.viewPagerSign)
         auth = findViewById(R.id.authorization)
         signButton = findViewById(R.id.next_btn)
+        nextArrow = findViewById(R.id.sign_next_btn_arrow)
+        progressCircle = findViewById(R.id.sign_progress_bar)
 
         pagerAdapter = SignPagerAdapter(
             supportFragmentManager,
@@ -72,7 +83,9 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
 
     fun signIn(view: View){
         signButton.isClickable = false
-        signInFragment.signIn()
+        //progressCircle.visibility = View.VISIBLE
+        //signInFragment.signIn()
+        startLoading()
     }
 
     fun signFailed(){
@@ -121,4 +134,27 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
         finish()
     }
 
+    private fun startLoading(){
+        val animScaleProgr = ValueAnimator.ofFloat(0.5f, 1f)
+        animScaleProgr.addUpdateListener {
+            val v = it.animatedValue as Float
+            progressCircle.scaleX = v
+            progressCircle.scaleY = v
+            progressCircle.alpha = v*2 - 1f
+        }
+        val animScaleArrow = ValueAnimator.ofFloat(1f, 0.5f)
+        animScaleArrow.addUpdateListener {
+            val v = it.animatedValue as Float
+            nextArrow.scaleX = v
+            nextArrow.scaleY = v
+            nextArrow.alpha = v*2 - 1f
+        }
+
+        animScaleProgr.duration = 150L
+        animScaleArrow.duration = 150L
+
+        animScaleArrow.start()
+        animScaleProgr.startDelay = 150L
+        animScaleProgr.start()
+    }
 }

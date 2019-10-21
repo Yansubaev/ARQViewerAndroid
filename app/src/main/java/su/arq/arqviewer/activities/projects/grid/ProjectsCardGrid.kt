@@ -90,15 +90,16 @@ class ProjectsCardGrid(
             loader.setOnProgressUpdateListener { build, progress ->
                 projectAdapter.getItem(build)?.holder?.progressBar?.setProgress(progress, true)
             }
-            loader.setOnPreExecuteListener {
-                projectAdapter.getItem(it)?.holder?.progressBar?.isIndeterminate = false
+            loader.setOnPreExecuteListener {build ->
+                projectAdapter.getItem(build)?.holder?.startDownloading()
             }
-            loader.setOnPostExecuteListener {
-                projectAdapter.getItem(it)?.holder?.downloadedAnimate()
+            loader.setOnPostExecuteListener {build ->
+                projectAdapter.getItem(build)?.holder?.downloadedAnimate()
             }
-        }catch (ex: Exception){
+            loader.execute()
+        } catch (ex: Exception){
             Log.e(this.javaClass.simpleName, ex.message, ex)
-        }finally {
+        } finally {
             tempBuild = null
         }
     }
@@ -110,8 +111,6 @@ class ProjectsCardGrid(
             tempBuild = model.build
             interactor.requestPerms()
         } else {
-            Log.d(this.javaClass.simpleName, model?.holder?.projectName?.text.toString())
-
             if (model != null) {
                 interactor.openBuild(model.build)
             }

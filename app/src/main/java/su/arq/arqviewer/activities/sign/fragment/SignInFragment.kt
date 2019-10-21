@@ -17,7 +17,7 @@ import su.arq.arqviewer.R
 import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.activities.sign.AnimatedInputField
-import su.arq.arqviewer.activities.sign.AccountRegistrator
+import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.webcomunication.response.AuthenticationData
 
@@ -94,7 +94,8 @@ class SignInFragment :
 
     override fun onLoadFinished(loader: Loader<AuthenticationData>, data: AuthenticationData) {
         if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){
-            Log.d(this.javaClass.simpleName + " signTrace", "onLoadFinished")
+            Log.d(this.javaClass.simpleName + " signTrace", "onLoadFinished, ")
+            data.printData()
             (activity as AccountRegistrator).onTokenReceived(
                 ARQAccount(data.email),
                 passwordField.text.toString(),

@@ -1,4 +1,4 @@
-package su.arq.arqviewer.activities.sign
+package su.arq.arqviewer.activities.sign.registrator
 
 import android.accounts.Account
 import android.accounts.AccountAuthenticatorResponse

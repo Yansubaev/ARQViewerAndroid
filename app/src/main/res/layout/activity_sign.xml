@@ -32,8 +32,12 @@
         android:layout_marginTop="19dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authorization" />
+        app:layout_constraintTop_toBottomOf="@+id/authorization"
+        app:layout_constraintVertical_bias="1.0" >
+
+    </androidx.viewpager.widget.ViewPager>
 
     <ImageButton
         android:id="@+id/back_btn"
@@ -63,10 +67,39 @@
         android:contentDescription="Next button"
         android:elevation="20dp"
         android:onClick="signIn"
-        android:src="@drawable/ic_next_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@drawable/ic_next_arrow" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/sign_next_btn_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00FFFFFF"
+        android:contentDescription="Next button arrow"
+        android:elevation="20dp"
+        android:onClick="signIn"
+        android:src="@drawable/ic_next_arrow"
+        app:layout_constraintBottom_toBottomOf="@+id/next_btn"
+        app:layout_constraintEnd_toEndOf="@+id/next_btn"
+        app:layout_constraintStart_toStartOf="@+id/next_btn"
+        app:layout_constraintTop_toTopOf="@+id/next_btn"
+        tools:visibility="visible" />
+
+    <ProgressBar
+        android:id="@+id/sign_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        android:elevation="20dp"
+        android:indeterminateTint="#FFFFFF"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/next_btn"
+        app:layout_constraintEnd_toEndOf="@+id/next_btn"
+        app:layout_constraintStart_toStartOf="@+id/next_btn"
+        app:layout_constraintTop_toTopOf="@+id/next_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

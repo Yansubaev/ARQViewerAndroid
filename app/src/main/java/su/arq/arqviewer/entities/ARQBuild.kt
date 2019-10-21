@@ -1,10 +1,9 @@
 package su.arq.arqviewer.entities
 
-import android.util.Log
 import org.json.JSONObject
 import java.io.File
 
-class ARQBuild(json: JSONObject, directory: String){
+data class ARQBuild(private val json: JSONObject, private val directory: String){
     var guid: String = json.getString("guid")
     var name: String = json.getString("name")
     var description: String = json.getString("description")

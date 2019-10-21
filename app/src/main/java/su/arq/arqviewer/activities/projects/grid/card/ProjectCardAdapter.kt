@@ -13,23 +13,19 @@ class ProjectCardAdapter (
     context: Context?,
     density: Float
 ) : RecyclerView.Adapter<ProjectCardViewHolder>() {
-    private var density = density
+    var cardModels = cardModels
     private var context = context
-    private var modelByBuildMap: HashMap<ARQBuild, ProjectCardModel> = HashMap()
+    private var density = density
+    private var modelByBuildMap: HashMap<String, ProjectCardModel> = HashMap()
     private var itemClickListener: ItemClickListener? = null
     private var onBindViewHolder:
             MutableList<((holder: ProjectCardViewHolder, position: Int) -> Unit)> = mutableListOf()
 
-    var cardModels = cardModels
-        set(value) {
-            value?.forEach { modelByBuildMap[it.build] = it }
-            field = value
-        }
     var viewWidth: Int? = null
 
     fun getItem(position: Int) : ProjectCardModel? = cardModels?.get(position)
 
-    fun getItem(build: ARQBuild?) : ProjectCardModel? = modelByBuildMap[build]
+    fun getItem(build: ARQBuild?) : ProjectCardModel? = modelByBuildMap[build?.guid]
 
     fun setOnClickListener(itemClickListener: ItemClickListener) {
         this.itemClickListener = itemClickListener
@@ -56,9 +52,12 @@ class ProjectCardAdapter (
 
     override fun onBindViewHolder(holder: ProjectCardViewHolder, position: Int) {
         holder.view.layoutParams = ViewGroup.LayoutParams(-1, viewWidth ?: 100)
-        holder.projectName.text = cardModels?.get(position)?.build?.name ?: "Error: NPE"
-        holder.projectIcon.setImageDrawable(cardModels?.get(position)?.icon)
-        cardModels?.get(position)?.holder = holder
+        cardModels?.get(position)?.let {
+            holder.projectName.text = it.build.name
+            holder.projectIcon.setImageDrawable(it.icon)
+            it.holder = holder
+            modelByBuildMap[it.build.guid] = it
+        }
         onBindViewHolder.forEach { it(holder, position) }
     }
 

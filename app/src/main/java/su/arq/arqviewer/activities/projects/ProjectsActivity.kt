@@ -43,7 +43,8 @@ class ProjectsActivity :
     override lateinit var projectsRecyclerView: RecyclerView
     override var onRefillProjectsGrid: ((builds: Array<ARQBuild>?) -> Unit)? = null
 
-    override val context: Context = applicationContext
+    override val context: Context
+        get() = applicationContext
     override val buildDirectory: String
         get() = "${filesDir.path}/${account?.name}"
     override val token: String
