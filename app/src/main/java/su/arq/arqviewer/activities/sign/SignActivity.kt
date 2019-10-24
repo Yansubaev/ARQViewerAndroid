@@ -83,8 +83,7 @@ class SignActivity : FragmentActivity(),
 
     fun signIn(view: View){
         signButton.isClickable = false
-        //progressCircle.visibility = View.VISIBLE
-        //signInFragment.signIn()
+        signInFragment.signIn()
         startLoading()
     }
 

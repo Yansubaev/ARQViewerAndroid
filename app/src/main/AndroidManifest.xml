@@ -7,12 +7,9 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -23,8 +20,16 @@
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="su.arq.arqviewer.activities.splashscreen.SplashScreenActivity"
-            android:theme="@style/ARQVTheme.Launcher">
+            android:name=".ScrollingActivity"
+            android:label="@string/title_activity_scrolling"
+            android:theme="@style/ARQVTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CoordinateTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,17 +37,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="su.arq.arqviewer.activities.projects.ProjectsActivity"
+            android:name=".activities.splashscreen.SplashScreenActivity"
+            android:theme="@style/ARQVTheme.Launcher"></activity>
+        <activity
+            android:name=".activities.projects.ProjectsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="su.arq.arqviewer.activities.sign.SignActivity"
+            android:name=".activities.sign.SignActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="su.arq.arqviewer.activities.walkthrough.WalkthroughActivity"
+            android:name=".activities.walkthrough.WalkthroughActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name="su.arq.arqviewer.account.ARQAuthenticatorService"
+            android:name=".account.ARQAuthenticatorService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
