@@ -5,6 +5,7 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import su.arq.arqviewer.R
@@ -16,6 +17,7 @@ import androidx.loader.content.Loader
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.unity3d.player.UnityPlayerActivity
+import kotlinx.android.synthetic.main.activity_test_scrolling.*
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.activities.projects.grid.ProjectsGridInteractor
@@ -52,14 +54,22 @@ class ProjectsActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         accountManager = AccountManager.get(applicationContext)
         val al = accountManager.getAccountsByType(ARQAccount.TYPE)
         account = al.last()
 
-        setContentView(R.layout.activity_projects)
+        setContentView(R.layout.activity_test_scrolling)
 
         projectsRecyclerView = this.findViewById(R.id.projects_grid)
+        setSupportActionBar(toolbar)
+        toolbar_layout.title = "Проекты"
+        toolbar_layout.apply {
+            val ttf = Typeface.createFromAsset(applicationContext.assets, "fonts/ttnorms_bold.ttf")
+            setCollapsedTitleTypeface(ttf)
+            setExpandedTitleTypeface(ttf)
+        }
+
         loaderManager = LoaderManager.getInstance(this)
 
         refreshLay = findViewById(R.id.projects_refresh_lay)

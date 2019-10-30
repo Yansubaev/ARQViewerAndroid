@@ -20,25 +20,25 @@
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ScrollingActivity"
-            android:label="@string/title_activity_scrolling"
+            android:name=".TestScrollingActivity"
             android:theme="@style/ARQVTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity android:name=".CoordinateTestActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.splashscreen.SplashScreenActivity"
-            android:theme="@style/ARQVTheme.Launcher"></activity>
+            android:theme="@style/ARQVTheme.Launcher">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+        </activity>
         <activity
             android:name=".activities.projects.ProjectsActivity"
             android:screenOrientation="portrait" />

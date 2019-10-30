@@ -28,8 +28,7 @@ import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
 import su.arq.arqviewer.activities.sign.registrator.AccountRegistratorService
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT
 
-class SignActivity : FragmentActivity(),
-    AccountRegistrator {
+class SignActivity : FragmentActivity(), AccountRegistrator {
     override val context: Context
         get() = applicationContext
     override var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
@@ -53,14 +52,6 @@ class SignActivity : FragmentActivity(),
                 AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE
             )
         AccountRegistratorService(this)
-
-        val from = intent.getStringExtra("FROM_ACTIVITY")
-        if(from == "Projects"){
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left)
-        } else {
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-        }
-
         setContentView(R.layout.activity_sign)
         setWindowsFlags()
 
@@ -84,11 +75,12 @@ class SignActivity : FragmentActivity(),
     fun signIn(view: View){
         signButton.isClickable = false
         signInFragment.signIn()
-        startLoading()
+        //startLoading()
     }
 
     fun signFailed(){
         signButton.isClickable = true
+        cancelLoading()
     }
 
     fun backButton(view: View) {
@@ -133,15 +125,23 @@ class SignActivity : FragmentActivity(),
         finish()
     }
 
-    private fun startLoading(){
-        val animScaleProgr = ValueAnimator.ofFloat(0.5f, 1f)
+    fun startLoading(){
+        nextButtonAnimations(0.5f, 1f)
+    }
+
+    fun cancelLoading(){
+        nextButtonAnimations(1f, 0.5f)
+    }
+
+    private fun nextButtonAnimations(start: Float, end: Float){
+        val animScaleProgr = ValueAnimator.ofFloat(start, end)
         animScaleProgr.addUpdateListener {
             val v = it.animatedValue as Float
             progressCircle.scaleX = v
             progressCircle.scaleY = v
             progressCircle.alpha = v*2 - 1f
         }
-        val animScaleArrow = ValueAnimator.ofFloat(1f, 0.5f)
+        val animScaleArrow = ValueAnimator.ofFloat(end, start)
         animScaleArrow.addUpdateListener {
             val v = it.animatedValue as Float
             nextArrow.scaleX = v

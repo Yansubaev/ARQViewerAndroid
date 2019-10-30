@@ -73,12 +73,18 @@ class SignInFragment :
 
     fun signIn(){
         when {
-            TextUtils.isEmpty(loginField.text) ->
+            TextUtils.isEmpty(loginField.text) ->{
                 loginField.error = "Логин не должен быть пустым"
-            TextUtils.isEmpty(passwordField.text) ->
+                (activity as SignActivity).signFailed()
+            }
+            TextUtils.isEmpty(passwordField.text) ->{
                 passwordField.error = "Пароль не должен быть пустым"
-            else ->
+                (activity as SignActivity).signFailed()
+            }
+            else ->{
+                (activity as SignActivity).startLoading()
                 mLoaderManager?.restartLoader(R.id.auth_data_loader, null, this)
+            }
         }
     }
 
