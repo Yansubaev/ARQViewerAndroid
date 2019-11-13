@@ -29,6 +29,7 @@ import su.arq.arqviewer.activities.sign.registrator.AccountRegistratorService
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT
 
 class SignActivity : FragmentActivity(), AccountRegistrator {
+
     override val context: Context
         get() = applicationContext
     override var accountAuthenticatorResponse: AccountAuthenticatorResponse? = null
@@ -78,7 +79,7 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
         //startLoading()
     }
 
-    fun signFailed(){
+    override fun signFailed(){
         signButton.isClickable = true
         cancelLoading()
     }

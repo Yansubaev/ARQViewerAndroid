@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.loader.app.LoaderManager
@@ -26,13 +27,22 @@ import su.arq.arqviewer.activities.projects.grid.ProjectsCardGrid
 import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.utils.*
 import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
+import su.arq.arqviewer.webcomunication.response.AuthenticationData
 import su.arq.arqviewer.webcomunication.response.BuildListData
+import android.net.NetworkInfo
+import android.net.ConnectivityManager
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
 
 class ProjectsActivity :
     AppCompatActivity(),
     BuildMetaData,
     ProjectsGridInteractor,
     LoaderManager.LoaderCallbacks<BuildListData>,
+    Loader.OnLoadCanceledListener<BuildListData>,
     ActivityCompat.OnRequestPermissionsResultCallback
 {
     private var loaderManager: LoaderManager? = null
@@ -79,6 +89,8 @@ class ProjectsActivity :
 
         ProjectsCardGrid(this)
 
+
+
         loaderManager?.restartLoader(R.id.builds_loader, null, this)
         refreshLay.setOnRefreshListener {
             loaderManager?.restartLoader(R.id.builds_loader, null, this)
@@ -124,6 +136,10 @@ class ProjectsActivity :
 
     override fun onLoaderReset(p0: Loader<BuildListData>) {  }
 
+    override fun onLoadCanceled(loader: Loader<BuildListData>) {
+        dlog(this, "onLoadCanceled")
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -135,5 +151,12 @@ class ProjectsActivity :
         }else{
             requestPerms()
         }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 }

@@ -1,10 +1,12 @@
 package su.arq.arqviewer.webcomunication.loaders
 
 import android.content.Context
+import android.util.Log
 import androidx.loader.content.AsyncTaskLoader
 import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.R
 import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.utils.dlog
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.BuildListData
 import su.arq.arqviewer.webcomunication.response.BuildListResponse
@@ -37,24 +39,32 @@ class ARQVBuildListLoader (
     }
 
     private fun loadBuildList() : BuildListData?{
-        val cn: HttpURLConnection = URL(baseUrl + buildsUrl).openConnection()
-                as HttpURLConnection
-        cn.requestMethod = "GET"
-        cn.addRequestProperty("Content-Type", "application/json")
-        cn.addRequestProperty("Authorization", "Bearer ${buildMeta.token}")
-        cn.connect()
+        try{
+            val cn: HttpURLConnection = URL(baseUrl + buildsUrl).openConnection()
+                    as HttpURLConnection
+            cn.requestMethod = "GET"
+            cn.addRequestProperty("Content-Type", "application/json")
+            cn.addRequestProperty("Authorization", "Bearer ${buildMeta.token}")
+            cn.connect()
 
-        if(responseCodeSuccess(cn.responseCode)){
-            return readInput(cn)
+            return if(responseCodeSuccess(cn.responseCode)){
+                readInput(cn)
+            }else
+                null
+        }catch (ex: Exception){
+            Log.e(this.javaClass.simpleName, ex.message, ex)
+            ex.printStackTrace()
+            return null
         }
-        onCancelLoad()
-        return null
     }
 
     private fun readInput(cn: HttpURLConnection): BuildListData?{
         return try{
+            Log.d(this.javaClass.simpleName, "READ INPUT")
             BuildListResponse(cn, buildMeta.buildDirectory)
         }catch (ex: IOException){
+            Log.d(this.javaClass.simpleName, "EXCEPTION INPUT")
+            onCancelLoad()
             null
         }catch (ex: ResponseSuccessFalseException){
             onCancelLoad()

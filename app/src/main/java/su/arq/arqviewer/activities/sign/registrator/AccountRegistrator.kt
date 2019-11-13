@@ -15,4 +15,5 @@ interface AccountRegistrator {
 
     fun onTokenReceived(account: Account, password: String?, token: String?)
     fun onAccountRegistered(account: Account)
+    fun signFailed()
 }

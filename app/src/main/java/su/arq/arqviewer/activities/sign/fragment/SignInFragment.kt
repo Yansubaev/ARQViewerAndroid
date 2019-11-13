@@ -18,6 +18,7 @@ import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.activities.sign.AnimatedInputField
 import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
+import su.arq.arqviewer.utils.toastError
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.webcomunication.response.AuthenticationData
 
@@ -34,6 +35,8 @@ class SignInFragment :
     private lateinit var loginInput: AnimatedInputField
     private lateinit var passwordInput: AnimatedInputField
 
+    private lateinit var rootLay: ConstraintLayout
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +45,8 @@ class SignInFragment :
         val rootView = inflater.inflate(
             R.layout.fragment_sign_in, container, false
         ) as ViewGroup
+
+        rootLay = rootView.findViewById(R.id.root_lay_fragment)
 
         val loginTxt = rootView.findViewById<TextView>(R.id.sign_in_login_txt)
         loginField = rootView.findViewById(R.id.sign_in_login_field)
@@ -74,12 +79,12 @@ class SignInFragment :
     fun signIn(){
         when {
             TextUtils.isEmpty(loginField.text) ->{
-                loginField.error = "Логин не должен быть пустым"
-                (activity as SignActivity).signFailed()
+                toastError(rootLay,"Логин не должен быть пустым", resources)
+                (activity as AccountRegistrator).signFailed()
             }
             TextUtils.isEmpty(passwordField.text) ->{
-                passwordField.error = "Пароль не должен быть пустым"
-                (activity as SignActivity).signFailed()
+                toastError(rootLay,"Пароль не должен быть пустым", resources)
+                (activity as AccountRegistrator).signFailed()
             }
             else ->{
                 (activity as SignActivity).startLoading()
@@ -98,22 +103,32 @@ class SignInFragment :
         return loader
     }
 
-    override fun onLoadFinished(loader: Loader<AuthenticationData>, data: AuthenticationData) {
-        if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){
-            Log.d(this.javaClass.simpleName + " signTrace", "onLoadFinished, ")
-            data.printData()
-            (activity as AccountRegistrator).onTokenReceived(
-                ARQAccount(data.email),
-                passwordField.text.toString(),
-                data.token
-            )
+    override fun onLoadFinished(loader: Loader<AuthenticationData>, data: AuthenticationData?) {
+        if(data == null){
+            Log.d(this.javaClass.simpleName, "Null received from loader")
+            toastError(rootLay,"Проверьте интернет соедиение", resources)
+            onSignFailed()
+        }else{
+            if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){
+                Log.d(this.javaClass.simpleName + " signingTrace", "onLoadFinished, ")
+                data.printData()
+                (activity as AccountRegistrator).onTokenReceived(
+                    ARQAccount(data.email),
+                    passwordField.text.toString(),
+                    data.token
+                )
+            }
         }
     }
 
     override fun onLoadCanceled(loader: Loader<AuthenticationData>) {
+        onSignFailed()
+    }
+
+    private fun onSignFailed(){
         passwordInput.activateInputFail()
         loginInput.activateInputFail()
-        (activity as SignActivity).signFailed()
+        (activity as AccountRegistrator).signFailed()
     }
 
     override fun onLoaderReset(loader: Loader<AuthenticationData>) {  }
