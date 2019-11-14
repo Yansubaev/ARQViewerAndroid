@@ -1,9 +1,10 @@
 package su.arq.arqviewer.entities
 
 import org.json.JSONObject
+import su.arq.arqviewer.BuildIcon
 import java.io.File
 
-data class ARQBuild(private val json: JSONObject, private val directory: String){
+data class ARQBuild(val json: JSONObject, private val directory: String){
     var guid: String = json.getString("guid")
     var name: String = json.getString("name")
     var description: String = json.getString("description")
@@ -15,7 +16,9 @@ data class ARQBuild(private val json: JSONObject, private val directory: String)
         6 -> BuildIcon.MANUFACTURE
         else -> BuildIcon.DEFAULT
     }
-    var file: File = File("$directory/$guid.arq")
+    var buildDir: File = File("$directory/$guid")
+    var buildFile: File = File("$directory/$guid/$guid.arq")
+    var metaFile: File = File("$directory/$guid/$guid.meta")
     val downloaded: Boolean
-        get() = file.exists()
+        get() = buildFile.exists()
 }

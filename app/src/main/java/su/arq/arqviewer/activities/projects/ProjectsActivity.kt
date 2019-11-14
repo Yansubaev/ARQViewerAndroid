@@ -10,39 +10,30 @@ import android.os.Bundle
 import android.view.View
 import su.arq.arqviewer.R
 import android.util.DisplayMetrics
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.unity3d.player.UnityPlayerActivity
 import kotlinx.android.synthetic.main.activity_test_scrolling.*
+import su.arq.arqviewer.BuildListProvider
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.activities.projects.grid.ProjectsGridInteractor
 import su.arq.arqviewer.entities.ARQBuild
-import su.arq.arqviewer.activities.projects.grid.ProjectsCardGrid
+import su.arq.arqviewer.activities.projects.grid.ProjectsCardGridController
 import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.utils.*
-import su.arq.arqviewer.webcomunication.loaders.ARQVBuildListLoader
-import su.arq.arqviewer.webcomunication.response.AuthenticationData
-import su.arq.arqviewer.webcomunication.response.BuildListData
-import android.net.NetworkInfo
-import android.net.ConnectivityManager
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import su.arq.arqviewer.webcomunication.tasks.RomBuildListLoader
+import su.arq.arqviewer.webcomunication.tasks.UrlBuildListLoader
 
 class ProjectsActivity :
     AppCompatActivity(),
     BuildMetaData,
     ProjectsGridInteractor,
-    LoaderManager.LoaderCallbacks<BuildListData>,
-    Loader.OnLoadCanceledListener<BuildListData>,
+    //LoaderManager.LoaderCallbacks<BuildListData>,
+    //Loader.OnLoadCanceledListener<BuildListData>,
     ActivityCompat.OnRequestPermissionsResultCallback
 {
     private var loaderManager: LoaderManager? = null
@@ -61,6 +52,12 @@ class ProjectsActivity :
         get() = "${filesDir.path}/${account?.name}"
     override val token: String
         get() = accountManager.peekAuthToken(account, account?.type)
+
+
+
+    private var blProvider: BuildListProvider? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +84,35 @@ class ProjectsActivity :
         displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        ProjectsCardGrid(this)
+        ProjectsCardGridController(this)
 
+        blProvider = UrlBuildListLoader(context, this)
+        subscribeListeners()
+        blProvider?.startLoading()
 
+        //loaderManager?.restartLoader(R.id.builds_loader, null, this)
 
-        loaderManager?.restartLoader(R.id.builds_loader, null, this)
+    }
+
+    private fun subscribeListeners(){
+        blProvider?.setOnBuildListLoadedListener {
+            onRefillProjectsGrid?.invoke(it.builds)
+            refreshLay.isRefreshing = false
+            blProvider = null
+        }
+        blProvider?.setOnBuildListLoadingErrorListener {
+            toastInternetUnavailable(toolbar_layout, resources)
+            blProvider = null
+            blProvider = RomBuildListLoader(this)
+            subscribeListeners()
+            blProvider?.startLoading()
+            refreshLay.isRefreshing = false
+        }
         refreshLay.setOnRefreshListener {
-            loaderManager?.restartLoader(R.id.builds_loader, null, this)
+            //loaderManager?.restartLoader(R.id.builds_loader, null, this)
+            blProvider = null
+            blProvider = UrlBuildListLoader(context, this)
+            blProvider?.startLoading()
         }
     }
 
@@ -116,12 +135,13 @@ class ProjectsActivity :
 
     override fun openBuild(build: ARQBuild){
         intent = Intent(applicationContext, UnityPlayerActivity::class.java)
-        val buildPath = build.file.absolutePath
+        val buildPath = build.buildFile.absolutePath
         intent.putExtra(EXTRA_VIEWER_BUILD_PATH, buildPath)
 
         startActivity(intent)
     }
 
+/*
     override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<BuildListData> {
         return ARQVBuildListLoader(
             applicationContext,
@@ -130,15 +150,21 @@ class ProjectsActivity :
     }
 
     override fun onLoadFinished(p0: Loader<BuildListData>, builds: BuildListData?) {
-        onRefillProjectsGrid?.invoke(builds?.builds)
-        refreshLay.isRefreshing = false
+        if(builds != null){
+            onRefillProjectsGrid?.invoke(builds.builds)
+            refreshLay.isRefreshing = false
+        }else{
+            toastInternetUnavailable(toolbar_layout, resources)
+            refreshLay.isRefreshing = false
+        }
     }
 
     override fun onLoaderReset(p0: Loader<BuildListData>) {  }
 
     override fun onLoadCanceled(loader: Loader<BuildListData>) {
-        dlog(this, "onLoadCanceled")
+        Log.d(this.javaClass.simpleName, "onLoadCanceled")
     }
+*/
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -151,12 +177,5 @@ class ProjectsActivity :
         }else{
             requestPerms()
         }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 }

@@ -3,15 +3,19 @@ package su.arq.arqviewer.activities.projects.grid
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import su.arq.arqviewer.BuildListProvider
+import su.arq.arqviewer.LoadedBuildSaver
 import su.arq.arqviewer.entities.ARQBuild
 import su.arq.arqviewer.activities.projects.grid.card.ProjectCardAdapter
 import su.arq.arqviewer.activities.projects.grid.card.GridSpacingItemDecoration
 import su.arq.arqviewer.activities.projects.grid.card.ProjectCardModel
+import su.arq.arqviewer.utils.toastInternetUnavailable
 import su.arq.arqviewer.webcomunication.tasks.ARQVBuildContentLoader
+import su.arq.arqviewer.webcomunication.tasks.UrlBuildListLoader
 import java.lang.Exception
 import kotlin.math.roundToInt
 
-class ProjectsCardGrid(
+class ProjectsCardGridController(
     private var interactor: ProjectsGridInteractor
 ) : ProjectCardAdapter.ItemClickListener {
     private var projectsGrid = interactor.projectsRecyclerView
@@ -26,35 +30,31 @@ class ProjectsCardGrid(
     init {
         val spanCount = 2
         projectModels = ArrayList()
-
         projectsGrid.layoutManager = GridLayoutManager(context, spanCount)
-
         projectAdapter = ProjectCardAdapter(
             projectModels,
             projectsGrid.context,
             displayMetrics.density
         )
-
         val itemDecoration = GridSpacingItemDecoration(
             spanCount,
             (22 * displayMetrics.density).roundToInt(),
             true
         )
-
         itemHeight = (displayMetrics.widthPixels/2 - 33*displayMetrics.density).roundToInt()
         projectAdapter.viewWidth = itemHeight
-
         projectsGrid.addItemDecoration(itemDecoration)
         projectsGrid.adapter = projectAdapter
 
+        //region Listeners
         projectAdapter.setOnClickListener(this)
-
         interactor.setOnRequestLoadProjectListener { token ->
             startLoadingProject(token)
         }
         interactor.setOnRefillProjectsGridListener {
             refillModels(it)
         }
+        //endregion
     }
 
     private fun refillModels(builds: Array<ARQBuild>?){
@@ -77,7 +77,7 @@ class ProjectsCardGrid(
 
         projectAdapter.addOnBindViewHolderListener { holder, position ->
             val build = projectAdapter.cardModels?.get(position)?.build
-            if(build?.file?.exists() == true){
+            if(build?.buildFile?.exists() == true){
                 holder.downloaded()
             }
         }
@@ -86,17 +86,25 @@ class ProjectsCardGrid(
 
     private fun startLoadingProject(token: String){
         try {
-            val loader = ARQVBuildContentLoader(context, token, tempBuild)
-            loader.setOnProgressUpdateListener { build, progress ->
-                projectAdapter.getItem(build)?.holder?.progressBar?.setProgress(progress, true)
-            }
-            loader.setOnPreExecuteListener {build ->
-                projectAdapter.getItem(build)?.holder?.startDownloading()
-            }
-            loader.setOnPostExecuteListener {build ->
-                projectAdapter.getItem(build)?.holder?.downloadedAnimate()
-            }
-            loader.execute()
+            ARQVBuildContentLoader(context, token, tempBuild).apply {
+                setOnProgressUpdateListener { build, progress ->
+                    projectAdapter.getItem(build)?.holder?.progressBar?.setProgress(progress, true)
+                }
+                setOnPreExecuteListener {build ->
+                    projectAdapter.getItem(build)?.holder?.startDownloading()
+                }
+                setOnPostExecuteListener {build, data ->
+                    if(build == null || data == null){
+                        toastInternetUnavailable(
+                            interactor.projectsRecyclerView,
+                            interactor.context.resources
+                        )
+                    }else{
+                        LoadedBuildSaver(build , data).save()
+                    }
+                    projectAdapter.getItem(build)?.holder?.downloadedAnimate()
+                }
+            }.execute()
         } catch (ex: Exception){
             Log.e(this.javaClass.simpleName, ex.message, ex)
         } finally {

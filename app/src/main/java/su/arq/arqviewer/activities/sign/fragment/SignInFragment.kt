@@ -18,7 +18,8 @@ import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.account.ARQAccount
 import su.arq.arqviewer.activities.sign.AnimatedInputField
 import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
-import su.arq.arqviewer.utils.toastError
+import su.arq.arqviewer.utils.toastErrorMessage
+import su.arq.arqviewer.utils.toastInternetUnavailable
 import su.arq.arqviewer.webcomunication.loaders.ARQVAuthDataLoader
 import su.arq.arqviewer.webcomunication.response.AuthenticationData
 
@@ -79,11 +80,11 @@ class SignInFragment :
     fun signIn(){
         when {
             TextUtils.isEmpty(loginField.text) ->{
-                toastError(rootLay,"Логин не должен быть пустым", resources)
+                toastErrorMessage(rootLay,"Логин не должен быть пустым", resources)
                 (activity as AccountRegistrator).signFailed()
             }
             TextUtils.isEmpty(passwordField.text) ->{
-                toastError(rootLay,"Пароль не должен быть пустым", resources)
+                toastErrorMessage(rootLay,"Пароль не должен быть пустым", resources)
                 (activity as AccountRegistrator).signFailed()
             }
             else ->{
@@ -106,7 +107,7 @@ class SignInFragment :
     override fun onLoadFinished(loader: Loader<AuthenticationData>, data: AuthenticationData?) {
         if(data == null){
             Log.d(this.javaClass.simpleName, "Null received from loader")
-            toastError(rootLay,"Проверьте интернет соедиение", resources)
+            toastInternetUnavailable(rootLay, resources)
             onSignFailed()
         }else{
             if(loader.id == R.id.auth_data_loader && !TextUtils.isEmpty(data.token)){

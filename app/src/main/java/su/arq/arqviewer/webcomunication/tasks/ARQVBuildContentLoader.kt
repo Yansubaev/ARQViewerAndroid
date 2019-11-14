@@ -25,7 +25,7 @@ class ARQVBuildContentLoader(
 
     private var onProgressUpdateListener: ((build: ARQBuild?, progress: Int) -> Unit)? = null
     private var onPreExecuteListener: ((build: ARQBuild?) -> Unit)? = null
-    private var onPostExecuteListener: ((build: ARQBuild?) -> Unit)? = null
+    private var onPostExecuteListener: ((build: ARQBuild?, data: ByteArray?) -> Unit)? = null
 
     fun setOnProgressUpdateListener(m: (build: ARQBuild?, progress: Int) -> Unit){
         onProgressUpdateListener = m
@@ -35,18 +35,12 @@ class ARQVBuildContentLoader(
         onPreExecuteListener = m
     }
 
-    fun setOnPostExecuteListener(m: (build: ARQBuild?) -> Unit){
+    fun setOnPostExecuteListener(m: (build: ARQBuild?, data: ByteArray?) -> Unit){
         onPostExecuteListener = m
     }
 
     override fun onPreExecute() {
-        outputFile = build?.file
-        if (outputFile?.parentFile?.exists() == false) { outputFile?.parentFile?.mkdir() }
 
-        if (outputFile?.exists() == false) {
-            outputFile?.createNewFile()
-            Log.i(this.javaClass.simpleName, "File Created")
-        }
         super.onPreExecute()
 
         onPreExecuteListener?.invoke(build)
@@ -99,14 +93,7 @@ class ARQVBuildContentLoader(
     }
 
     override fun onPostExecute(result: ByteArray?) {
-        try {
-            val fos = FileOutputStream(outputFile)
-            fos.use { fos.write(result) }
-        }catch (ex: Exception){
-            Log.e(this.javaClass.simpleName, ex.message, ex)
-        }
+        onPostExecuteListener?.invoke(build, result)
         super.onPostExecute(result)
-
-        onPostExecuteListener?.invoke(build)
     }
 }
