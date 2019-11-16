@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="140dp"
         android:background="@color/colorWhite"
         android:fitsSystemWindows="true"
         android:theme="@style/ARQVTheme.AppBarOverlay">
@@ -34,7 +34,8 @@
                 android:layout_height="78dp"
                 android:minHeight="72dp"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ARQVTheme.PopupOverlay" />
+                app:popupTheme="@style/ARQVTheme.PopupOverlay"
+                app:titleMargin="0dp" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

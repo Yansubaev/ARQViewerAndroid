@@ -13,6 +13,7 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
+import android.graphics.Typeface
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -71,12 +72,17 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
             models as ArrayList<SignPageModel>
         )
         viewPager.adapter = pagerAdapter
+
+        auth.apply {
+            val ttf = Typeface.createFromAsset(applicationContext.assets, "fonts/ttnorms_bold.ttf")
+            typeface = ttf
+        }
     }
 
     fun signIn(view: View){
         signButton.isClickable = false
         signInFragment.signIn()
-        //startLoading()
+        //startLoadingList()
     }
 
     override fun signFailed(){

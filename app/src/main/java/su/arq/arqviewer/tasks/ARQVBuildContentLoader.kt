@@ -1,4 +1,4 @@
-package su.arq.arqviewer.webcomunication.tasks
+package su.arq.arqviewer.tasks
 
 import android.content.Context
 import android.os.AsyncTask
@@ -9,7 +9,6 @@ import java.io.File
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
-import java.io.FileOutputStream
 
 class ARQVBuildContentLoader(
     context: Context,
@@ -40,9 +39,7 @@ class ARQVBuildContentLoader(
     }
 
     override fun onPreExecute() {
-
         super.onPreExecute()
-
         onPreExecuteListener?.invoke(build)
     }
 

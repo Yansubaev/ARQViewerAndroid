@@ -3,26 +3,24 @@ package su.arq.arqviewer.activities.projects.grid
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import su.arq.arqviewer.BuildListProvider
 import su.arq.arqviewer.LoadedBuildSaver
 import su.arq.arqviewer.entities.ARQBuild
-import su.arq.arqviewer.activities.projects.grid.card.ProjectCardAdapter
+import su.arq.arqviewer.activities.projects.grid.card.PCAdapter
 import su.arq.arqviewer.activities.projects.grid.card.GridSpacingItemDecoration
-import su.arq.arqviewer.activities.projects.grid.card.ProjectCardModel
+import su.arq.arqviewer.activities.projects.grid.card.PCModel
 import su.arq.arqviewer.utils.toastInternetUnavailable
-import su.arq.arqviewer.webcomunication.tasks.ARQVBuildContentLoader
-import su.arq.arqviewer.webcomunication.tasks.UrlBuildListLoader
+import su.arq.arqviewer.tasks.ARQVBuildContentLoader
 import java.lang.Exception
 import kotlin.math.roundToInt
 
-class ProjectsCardGridController(
+class PCGridController(
     private var interactor: ProjectsGridInteractor
-) : ProjectCardAdapter.ItemClickListener {
+) : PCAdapter.ItemClickListener {
     private var projectsGrid = interactor.projectsRecyclerView
     private var displayMetrics = interactor.displayMetrics
     private var context = interactor.context
-    private var projectModels: MutableList<ProjectCardModel>
-    private var projectAdapter: ProjectCardAdapter
+    private var projectModels: MutableList<PCModel>
+    private var projectAdapter: PCAdapter
     private var itemHeight: Int
 
     private var tempBuild: ARQBuild? = null
@@ -31,7 +29,7 @@ class ProjectsCardGridController(
         val spanCount = 2
         projectModels = ArrayList()
         projectsGrid.layoutManager = GridLayoutManager(context, spanCount)
-        projectAdapter = ProjectCardAdapter(
+        projectAdapter = PCAdapter(
             projectModels,
             projectsGrid.context,
             displayMetrics.density
@@ -60,14 +58,14 @@ class ProjectsCardGridController(
     private fun refillModels(builds: Array<ARQBuild>?){
         projectModels.clear()
         builds?.forEach {
-            val pm = ProjectCardModel(context, it)
+            val pm = PCModel(context, it)
             projectModels.add(pm)
         }
         updateGrid()
     }
 
     private fun updateGrid(){
-        projectAdapter = ProjectCardAdapter(
+        projectAdapter = PCAdapter(
             projectModels,
             projectsGrid.context,
             displayMetrics.density
@@ -113,7 +111,7 @@ class ProjectsCardGridController(
     }
 
     override fun onItemClick(view: View?, position: Int) {
-        val model = (projectsGrid.adapter as ProjectCardAdapter).getItem(position)
+        val model = (projectsGrid.adapter as PCAdapter).getItem(position)
 
         if(model?.build?.downloaded == false) {
             tempBuild = model.build

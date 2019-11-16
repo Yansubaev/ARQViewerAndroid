@@ -1,4 +1,4 @@
-package su.arq.arqviewer.webcomunication.tasks
+package su.arq.arqviewer.tasks
 
 import android.os.AsyncTask
 import android.util.Log
@@ -53,7 +53,7 @@ class RomBuildListLoader(
         }
     }
 
-    override fun startLoading() {
+    override fun startLoadingList() {
         this.execute()
     }
 

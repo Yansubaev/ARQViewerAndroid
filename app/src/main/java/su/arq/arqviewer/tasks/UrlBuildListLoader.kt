@@ -1,12 +1,11 @@
-package su.arq.arqviewer.webcomunication.loaders
+package su.arq.arqviewer.tasks
 
 import android.content.Context
+import android.os.AsyncTask
 import android.util.Log
-import androidx.loader.content.AsyncTaskLoader
 import su.arq.arqviewer.BuildListProvider
-import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.R
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.entities.BuildMetaData
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
 import su.arq.arqviewer.webcomunication.response.BuildListData
 import su.arq.arqviewer.webcomunication.response.BuildListResponse
@@ -14,31 +13,36 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ARQVBuildListLoader (
+class UrlBuildListLoader(
     context: Context,
     private var buildMeta: BuildMetaData
-) : AsyncTaskLoader<BuildListData>(context) {
+) : AsyncTask<String, Long, BuildListData?>(), BuildListProvider {
+
+    override var onBuildListLoaded: ((builds: BuildListData) -> Unit)? = null
+    override var onBuildListLoadingError: ((message: String) -> Unit)? = null
 
     private val baseUrl: String = context.getString(R.string.arqv_connection_base_url)
     private val buildsUrl: String = context.getString(R.string.arqv_connection_bulds)
-    private var builds: BuildListData? = null
 
-    override fun loadInBackground() = loadBuildList()
-
-    override fun onStartLoading() {
-        if (builds == null) {
-            forceLoad()
-        } else {
-            deliverResult(builds)
+    override fun startLoadingList() {
+        this.execute()
+    }
+    override fun onPostExecute(result: BuildListData?) {
+        if(result != null){
+            onBuildListLoaded?.invoke(result)
+        }else{
+            onBuildListLoadingError?.invoke("Error loading build list")
         }
+        super.onPostExecute(result)
     }
-
-    override fun deliverResult(data: BuildListData?) {
-        builds = data
-        super.deliverResult(data)
+    override fun onCancelled(result: BuildListData?) {
+        onBuildListLoadingError?.invoke("Error loading build list")
+        super.onCancelled(result)
     }
-
-    private fun loadBuildList() : BuildListData?{
+    override fun onPreExecute() {
+        super.onPreExecute()
+    }
+    override fun doInBackground(vararg params: String?): BuildListData? {
         try{
             val cn: HttpURLConnection = URL(baseUrl + buildsUrl).openConnection()
                     as HttpURLConnection
@@ -63,11 +67,9 @@ class ARQVBuildListLoader (
             Log.d(this.javaClass.simpleName, "READ INPUT")
             BuildListResponse(cn, buildMeta.buildDirectory)
         }catch (ex: IOException){
-            Log.d(this.javaClass.simpleName, "EXCEPTION INPUT")
-            onCancelLoad()
+            Log.e(this.javaClass.simpleName, ex.message, ex)
             null
         }catch (ex: ResponseSuccessFalseException){
-            onCancelLoad()
             null
         }finally {
             cn.inputStream.close()

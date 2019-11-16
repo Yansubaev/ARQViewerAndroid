@@ -5,7 +5,7 @@ import su.arq.arqviewer.webcomunication.response.BuildListData
 
 interface BuildListProvider {
 
-    fun startLoading()
+    fun startLoadingList()
 
     var onBuildListLoaded: ((builds: BuildListData) -> Unit)?
     fun setOnBuildListLoadedListener( l: ((builds: BuildListData) -> Unit)){

@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import su.arq.arqviewer.R
 import kotlin.math.roundToInt
 
-class ProjectCardViewHolder(
+class PCViewHolder(
     var view: View,
-    private var mClickListener: ProjectCardAdapter.ItemClickListener?
+    private var mClickListener: PCAdapter.ItemClickListener?
 ) : RecyclerView.ViewHolder(view), View.OnClickListener {
     var projectName: TextView = view.findViewById(R.id.project_name_txt)
     var projectIcon: ImageView = view.findViewById(R.id.project_icon)

@@ -7,7 +7,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="C:/ARQ-Viewer-Unity/Android Projects/ARQVAP1/unityLibrary" />
+            <option value="C:/UnityProjects/UnityAsLib-Unity/UnityAsLib-AP3/unityLibrary" />
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
           </set>
