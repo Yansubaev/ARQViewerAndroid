@@ -1,7 +1,7 @@
-package su.arq.arqviewer.entities
+package su.arq.arqviewer.build.entities
 
 import org.json.JSONObject
-import su.arq.arqviewer.BuildIcon
+import su.arq.arqviewer.build.BuildIcon
 import java.io.File
 
 data class ARQBuild(val json: JSONObject, private val directory: String){

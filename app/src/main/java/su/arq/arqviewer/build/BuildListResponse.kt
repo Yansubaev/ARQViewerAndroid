@@ -1,7 +1,8 @@
-package su.arq.arqviewer.webcomunication.response
+package su.arq.arqviewer.build
 
 import org.json.JSONArray
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
+import su.arq.arqviewer.webcomunication.response.WebResponseBase
 import java.net.HttpURLConnection
 
 class BuildListResponse(

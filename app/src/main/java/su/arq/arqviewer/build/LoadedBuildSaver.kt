@@ -1,7 +1,7 @@
-package su.arq.arqviewer
+package su.arq.arqviewer.build
 
 import android.util.Log
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
 import java.io.FileOutputStream
 
 class LoadedBuildSaver(private var build: ARQBuild, private var data: ByteArray) {

@@ -2,9 +2,12 @@ package su.arq.arqviewer.activities.projects
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
@@ -15,18 +18,17 @@ import androidx.core.app.ActivityCompat
 import androidx.loader.app.LoaderManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.unity3d.player.UnityPlayerActivity
 import kotlinx.android.synthetic.main.activity_test_scrolling.*
-import su.arq.arqviewer.BuildListProvider
+import su.arq.arqviewer.build.BuildListProvider
 import su.arq.arqviewer.account.ARQAccount
-import su.arq.arqviewer.entities.BuildMetaData
+import su.arq.arqviewer.build.entities.BuildMetaData
 import su.arq.arqviewer.activities.projects.grid.ProjectsGridInteractor
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
 import su.arq.arqviewer.activities.projects.grid.PCGridController
 import su.arq.arqviewer.activities.sign.SignActivity
 import su.arq.arqviewer.utils.*
-import su.arq.arqviewer.tasks.RomBuildListLoader
-import su.arq.arqviewer.tasks.UrlBuildListLoader
+import su.arq.arqviewer.build.tasks.RomBuildListLoader
+import su.arq.arqviewer.build.tasks.UrlBuildListLoader
 import su.arq.unitylib.MainUnityActivity
 
 class ProjectsActivity :
@@ -109,6 +111,7 @@ class ProjectsActivity :
     fun quitProjects(view: View){
         accountManager.removeAccountExplicitly(account)
         val intent = Intent(applicationContext, SignActivity::class.java)
+        intent.putExtra(EXTRA_FROM_ACTIVITY, ProjectsActivity::class.java.simpleName)
         startActivity(intent)
         finish()
     }
@@ -123,12 +126,16 @@ class ProjectsActivity :
         )
     }
 
-    override fun openBuild(build: ARQBuild){
+    override fun openBuild(build: ARQBuild, v: View){
         intent = Intent(applicationContext, MainUnityActivity::class.java)
         val buildPath = build.buildFile.absolutePath
         intent.putExtra(EXTRA_VIEWER_BUILD_PATH, buildPath)
-
-        startActivity(intent)
+        val b: Bundle
+        val bitmap = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(Color.parseColor("#308cf8"))
+        b = ActivityOptions.makeThumbnailScaleUpAnimation(v, bitmap, 0, 0).toBundle()
+        //overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out)
+        startActivity(intent, b)
     }
 
     override fun onRequestPermissionsResult(

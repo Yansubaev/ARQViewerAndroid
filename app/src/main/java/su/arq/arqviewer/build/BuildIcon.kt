@@ -1,4 +1,4 @@
-package su.arq.arqviewer
+package su.arq.arqviewer.build
 
 import su.arq.arqviewer.R
 

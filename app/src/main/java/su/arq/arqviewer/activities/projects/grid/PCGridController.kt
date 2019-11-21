@@ -3,13 +3,12 @@ package su.arq.arqviewer.activities.projects.grid
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import su.arq.arqviewer.LoadedBuildSaver
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
 import su.arq.arqviewer.activities.projects.grid.card.PCAdapter
 import su.arq.arqviewer.activities.projects.grid.card.GridSpacingItemDecoration
 import su.arq.arqviewer.activities.projects.grid.card.PCModel
 import su.arq.arqviewer.utils.toastInternetUnavailable
-import su.arq.arqviewer.tasks.ARQVBuildContentLoader
+import su.arq.arqviewer.build.tasks.ARQVBuildContentLoader
 import java.lang.Exception
 import kotlin.math.roundToInt
 
@@ -118,7 +117,7 @@ class PCGridController(
             interactor.requestPerms()
         } else {
             if (model != null) {
-                interactor.openBuild(model.build)
+                interactor.openBuild(model.build, view!!)
             }
         }
     }

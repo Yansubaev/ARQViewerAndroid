@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import su.arq.arqviewer.R
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
 
 class PCAdapter (
     cardModels: List<PCModel>?,

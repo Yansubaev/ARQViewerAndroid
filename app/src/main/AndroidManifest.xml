@@ -20,14 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/ARQVTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".TestScrollingActivity"
-            android:theme="@style/ARQVTheme.NoActionBar">
 
-
-        </activity>
-        <activity android:name=".CoordinateTestActivity">
-        </activity>
         <activity
             android:name=".activities.splashscreen.SplashScreenActivity"
             android:theme="@style/ARQVTheme.Launcher">

@@ -1,13 +1,13 @@
-package su.arq.arqviewer.tasks
+package su.arq.arqviewer.build.tasks
 
 import android.os.AsyncTask
 import android.util.Log
 import org.json.JSONObject
-import su.arq.arqviewer.BuildListProvider
-import su.arq.arqviewer.RomBuildList
-import su.arq.arqviewer.entities.ARQBuild
-import su.arq.arqviewer.entities.BuildMetaData
-import su.arq.arqviewer.webcomunication.response.BuildListData
+import su.arq.arqviewer.build.BuildListProvider
+import su.arq.arqviewer.build.RomBuildList
+import su.arq.arqviewer.build.entities.ARQBuild
+import su.arq.arqviewer.build.entities.BuildMetaData
+import su.arq.arqviewer.build.BuildListData
 import java.io.File
 import java.lang.Exception
 
@@ -27,14 +27,6 @@ class RomBuildListLoader(
             onBuildListLoadingError?.invoke("Error when loading project from ROM")
         }
         super.onPostExecute(result)
-    }
-
-    override fun onCancelled(result: BuildListData?) {
-        super.onCancelled(result)
-    }
-
-    override fun onPreExecute() {
-        super.onPreExecute()
     }
 
     override fun doInBackground(vararg params: String?): BuildListData? {

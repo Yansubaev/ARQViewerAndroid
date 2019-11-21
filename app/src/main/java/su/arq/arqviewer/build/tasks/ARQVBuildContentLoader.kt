@@ -1,10 +1,10 @@
-package su.arq.arqviewer.tasks
+package su.arq.arqviewer.build.tasks
 
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
 import su.arq.arqviewer.R
-import su.arq.arqviewer.entities.ARQBuild
+import su.arq.arqviewer.build.entities.ARQBuild
 import java.io.BufferedInputStream
 import java.io.FileOutputStream
 import java.lang.Exception

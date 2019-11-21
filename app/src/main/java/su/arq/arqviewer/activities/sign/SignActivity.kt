@@ -28,6 +28,7 @@ import su.arq.arqviewer.activities.sign.fragment.SignInFragment
 import su.arq.arqviewer.activities.sign.registrator.AccountRegistrator
 import su.arq.arqviewer.activities.sign.registrator.AccountRegistratorService
 import su.arq.arqviewer.utils.EXTRA_ARQ_ACCOUNT
+import su.arq.arqviewer.utils.EXTRA_FROM_ACTIVITY
 
 class SignActivity : FragmentActivity(), AccountRegistrator {
 
@@ -48,6 +49,13 @@ class SignActivity : FragmentActivity(), AccountRegistrator {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val fromAct = intent.getStringExtra(EXTRA_FROM_ACTIVITY)
+        if(fromAct!=null && fromAct == ProjectsActivity::class.java.simpleName){
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }else{
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
 
         accountAuthenticatorResponse =
             intent.getParcelableExtra(

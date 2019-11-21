@@ -1,4 +1,4 @@
-package su.arq.arqviewer.entities
+package su.arq.arqviewer.build.entities
 
 interface BuildMetaData{
     val buildDirectory: String

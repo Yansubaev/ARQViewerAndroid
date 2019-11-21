@@ -1,14 +1,14 @@
-package su.arq.arqviewer.tasks
+package su.arq.arqviewer.build.tasks
 
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
-import su.arq.arqviewer.BuildListProvider
+import su.arq.arqviewer.build.BuildListProvider
 import su.arq.arqviewer.R
-import su.arq.arqviewer.entities.BuildMetaData
+import su.arq.arqviewer.build.entities.BuildMetaData
 import su.arq.arqviewer.webcomunication.exceptions.ResponseSuccessFalseException
-import su.arq.arqviewer.webcomunication.response.BuildListData
-import su.arq.arqviewer.webcomunication.response.BuildListResponse
+import su.arq.arqviewer.build.BuildListData
+import su.arq.arqviewer.build.BuildListResponse
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -39,9 +39,7 @@ class UrlBuildListLoader(
         onBuildListLoadingError?.invoke("Error loading build list")
         super.onCancelled(result)
     }
-    override fun onPreExecute() {
-        super.onPreExecute()
-    }
+
     override fun doInBackground(vararg params: String?): BuildListData? {
         try{
             val cn: HttpURLConnection = URL(baseUrl + buildsUrl).openConnection()
