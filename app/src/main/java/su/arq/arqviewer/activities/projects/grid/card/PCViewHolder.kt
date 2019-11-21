@@ -70,4 +70,11 @@ class PCViewHolder(
         params.marginStart = (rightNamePosition * (density ?: 1f)).roundToInt()
         projectName.layoutParams = params
     }
+    fun notDownloaded(){
+        progressBar.visibility = View.GONE
+        cloudIcon.visibility = View.VISIBLE
+        val params = projectName.layoutParams as ConstraintLayout.LayoutParams
+        params.marginStart = (rightNamePosition * (density ?: 1f)).roundToInt()
+        projectName.layoutParams = params
+    }
 }

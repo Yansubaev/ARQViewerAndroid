@@ -42,13 +42,17 @@
 
             <TextView
                 android:id="@+id/project_name_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="339dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="38dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:fontFamily="@font/ttnorms_medium"
-                android:text="@string/project_name"
+                android:paddingRight="40dp"
+                android:text="dfhfghdfghdfjdghjghdfjfdghdfhgdfghfdhsdddddddddddddddddddddddddddddddddddd"
                 android:textAppearance="@style/project_name"
+                app:layout_constraintEnd_toStartOf="@+id/name_background"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/name_background" />
 

@@ -91,16 +91,16 @@ class PCGridController(
                 setOnPreExecuteListener {build ->
                     projectAdapter.getItem(build)?.holder?.startDownloading()
                 }
-                setOnPostExecuteListener {build, data ->
-                    if(build == null || data == null){
+                setOnPostExecuteListener {build, success ->
+                    if(build == null || !success){
                         toastInternetUnavailable(
                             interactor.projectsRecyclerView,
                             interactor.context.resources
                         )
+                        projectAdapter.getItem(build)?.holder?.notDownloaded()
                     }else{
-                        LoadedBuildSaver(build , data).save()
+                        projectAdapter.getItem(build)?.holder?.downloadedAnimate()
                     }
-                    projectAdapter.getItem(build)?.holder?.downloadedAnimate()
                 }
             }.execute()
         } catch (ex: Exception){

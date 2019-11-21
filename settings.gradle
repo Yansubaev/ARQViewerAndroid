@@ -1,3 +1,3 @@
-include ':app'
+include ':app', ':UnityARCore', ':unityandroidpermissions', ':arcore_client'
 include ':unityLibrary'
-project(':unityLibrary').projectDir=new File('C:\\UnityProjects\\UnityAsLib-Unity\\UnityAsLib-AP3\\unityLibrary')
+project(':unityLibrary').projectDir=new File('C:\\UnityProjects\\ARQ-Viewer-Unity\\AndroidProject2\\unityLibrary')

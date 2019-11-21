@@ -69,7 +69,7 @@ class ProjectsActivity :
             val ttf = Typeface.createFromAsset(applicationContext.assets, "fonts/ttnorms_bold.ttf")
             setCollapsedTitleTypeface(ttf)
             setExpandedTitleTypeface(ttf)
-            title = resources.getText(R.string.signing_in)
+            title = resources.getText(R.string.projects)
         }
 
         refreshLay = findViewById(R.id.projects_refresh_lay)
